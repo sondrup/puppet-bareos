@@ -5,6 +5,6 @@ fixtures:
     postgresql: https://github.com/puppetlabs/puppetlabs-postgresql.git
     puppet: https://github.com/puppetlabs-operations/puppet-puppet.git
   symlinks:
-    bacula: "#{source_dir}"
+    bareos: "#{source_dir}"
 
 

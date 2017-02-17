@@ -1,9 +1,9 @@
 Director {
     Name     = <%= @director %>-dir
     Password = "<%= @password %>"
-<%= scope.function_template(['bacula/_ssl.erb']) -%>
-<%= scope.function_template(['bacula/_sslkeypair.erb']) -%>
-<% if scope.lookupvar('bacula::params::ssl') -%>
+<%= scope.function_template(['bareos/_ssl.erb']) -%>
+<%= scope.function_template(['bareos/_sslkeypair.erb']) -%>
+<% if scope.lookupvar('bareos::params::ssl') -%>
     TLS Verify Peer         = no
 <% end -%>
 }
@@ -12,9 +12,9 @@ Director {
     Name     = <%= @director %>-mon
     Password = "<%= @password %>"
     Monitor  = yes
-<%= scope.function_template(['bacula/_ssl.erb']) -%>
-<%= scope.function_template(['bacula/_sslkeypair.erb']) -%>
-<% if scope.lookupvar('bacula::params::ssl') -%>
+<%= scope.function_template(['bareos/_ssl.erb']) -%>
+<%= scope.function_template(['bareos/_sslkeypair.erb']) -%>
+<% if scope.lookupvar('bareos::params::ssl') -%>
     TLS Verify Peer         = no
 <% end -%>
 }
@@ -23,12 +23,12 @@ FileDaemon {
     Name                    = <%= @clientcert %>-fd
 <% if @listen_address -%>
     FDAddresses             = {
-<%= scope.function_template(['bacula/_listen.erb']) -%>
+<%= scope.function_template(['bareos/_listen.erb']) -%>
     }
 <% end -%>
     WorkingDirectory        = <%= @homedir %>
     Pid Directory           = <%= @rundir %>
     Maximum Concurrent Jobs = <%= @max_concurrent_jobs %>
-<%= scope.function_template(['bacula/_ssl.erb']) -%>
-<%= scope.function_template(['bacula/_sslkeypair.erb']) -%>
+<%= scope.function_template(['bareos/_ssl.erb']) -%>
+<%= scope.function_template(['bareos/_sslkeypair.erb']) -%>
 }

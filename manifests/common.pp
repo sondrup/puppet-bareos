@@ -1,21 +1,21 @@
-# = Class: bacula::common
+# = Class: bareos::common
 #
 # == Description
 #
-# This class configures and installs the bacula client packages and enables
-# the service, so that bacula jobs can be run on the client including this
+# This class configures and installs the bareos client packages and enables
+# the service, so that bareos jobs can be run on the client including this
 # manifest.
 #
-class bacula::common (
-  $homedir      = $bacula::params::homedir,
+class bareos::common (
+  $homedir      = $bareos::params::homedir,
   $homedir_mode = '0770',
-  $packages     = $bacula::params::bacula_client_packages,
-  $user         = $bacula::params::bacula_user,
-  $group        = $bacula::params::bacula_group,
-) inherits bacula::params {
+  $packages     = $bareos::params::bareos_client_packages,
+  $user         = $bareos::params::bareos_user,
+  $group        = $bareos::params::bareos_group,
+) inherits bareos::params {
 
-  include bacula::ssl
-  include bacula::client
+  include bareos::ssl
+  include bareos::client
 
   file { $homedir:
     ensure  => directory,

@@ -1,6 +1,6 @@
-# Class: bacula::director
+# Class: bareos::director
 #
-# This class installs and configures the Bacula Backup Director
+# This class installs and configures the Bareos Backup Director
 #
 # Parameters:
 # * db_user: the database user
@@ -10,40 +10,40 @@
 #
 # Sample Usage:
 #
-#   class { 'bacula::director':
+#   class { 'bareos::director':
 #     storage => 'mystorage.example.com'
 #   }
 #
-class bacula::director (
+class bareos::director (
   $port                = '9101',
   $listen_address      = $::ipaddress,
-  $db_user             = $bacula::params::bacula_user,
+  $db_user             = $bareos::params::bareos_user,
   $db_pw               = 'notverysecret',
-  $db_name             = $bacula::params::bacula_user,
-  $db_type             = $bacula::params::db_type,
+  $db_name             = $bareos::params::bareos_user,
+  $db_type             = $bareos::params::db_type,
   $password            = 'secret',
   $max_concurrent_jobs = '20',
-  $packages            = $bacula::params::bacula_director_packages,
-  $services            = $bacula::params::bacula_director_services,
-  $homedir             = $bacula::params::homedir,
-  $rundir              = $bacula::params::rundir,
-  $conf_dir            = $bacula::params::conf_dir,
+  $packages            = $bareos::params::bareos_director_packages,
+  $services            = $bareos::params::bareos_director_services,
+  $homedir             = $bareos::params::homedir,
+  $rundir              = $bareos::params::rundir,
+  $conf_dir            = $bareos::params::conf_dir,
   $director            = $::fqdn, # director here is not params::director
-  $director_address    = $bacula::params::director_address,
-  $storage             = $bacula::params::storage,
-  $group               = $bacula::params::bacula_group,
-  $job_tag             = $bacula::params::job_tag,
+  $director_address    = $bareos::params::director_address,
+  $storage             = $bareos::params::storage,
+  $group               = $bareos::params::bareos_group,
+  $job_tag             = $bareos::params::job_tag,
   $messages,
-) inherits bacula::params {
+) inherits bareos::params {
 
-  include bacula::common
-  include bacula::client
-  include bacula::ssl
-  include bacula::director::defaults
-  include bacula::virtual
+  include bareos::common
+  include bareos::client
+  include bareos::ssl
+  include bareos::director::defaults
+  include bareos::virtual
 
   case $db_type {
-    /^(pgsql|postgresql)$/: { include bacula::director::postgresql }
+    /^(pgsql|postgresql)$/: { include bareos::director::postgresql }
     'none': { }
     default:                { fail('No db_type set') }
   }
@@ -53,7 +53,7 @@ class bacula::director (
   service { $services:
     ensure    => running,
     enable    => true,
-    subscribe => File[$bacula::ssl::ssl_files],
+    subscribe => File[$bareos::ssl::ssl_files],
     require   => Package[$packages],
   }
 
@@ -66,7 +66,7 @@ class bacula::director (
     group     => $group,
     mode      => '0640',
     show_diff => false,
-    content   => template('bacula/bconsole.conf.erb');
+    content   => template('bareos/bconsole.conf.erb');
   }
 
   Concat {
@@ -76,36 +76,36 @@ class bacula::director (
     notify => Service[$services],
   }
 
-  concat::fragment { 'bacula-director-header':
+  concat::fragment { 'bareos-director-header':
     order   => '00',
-    target  => "${conf_dir}/bacula-dir.conf",
-    content => template('bacula/bacula-dir-header.erb')
+    target  => "${conf_dir}/bareos-dir.conf",
+    content => template('bareos/bareos-dir-header.erb')
   }
 
-  concat::fragment { 'bacula-director-tail':
+  concat::fragment { 'bareos-director-tail':
     order   => '99999',
-    target  => "${conf_dir}/bacula-dir.conf",
-    content => template('bacula/bacula-dir-tail.erb')
+    target  => "${conf_dir}/bareos-dir.conf",
+    content => template('bareos/bareos-dir-tail.erb')
   }
 
-  create_resources(bacula::messages, $messages)
+  create_resources(bareos::messages, $messages)
 
-  Bacula::Director::Pool <<||>> { conf_dir => $conf_dir }
-  Bacula::Director::Storage <<| tag == "bacula-${storage}" |>> { conf_dir => $conf_dir }
-  Bacula::Director::Client <<| tag == "bacula-${director}" |>> { conf_dir => $conf_dir }
+  Bareos::Director::Pool <<||>> { conf_dir => $conf_dir }
+  Bareos::Director::Storage <<| tag == "bareos-${storage}" |>> { conf_dir => $conf_dir }
+  Bareos::Director::Client <<| tag == "bareos-${director}" |>> { conf_dir => $conf_dir }
 
   if !empty($job_tag) {
-    Bacula::Fileset <<| tag == $job_tag |>> { conf_dir => $conf_dir }
-    Bacula::Director::Job <<| tag == $job_tag |>> { conf_dir => $conf_dir }
+    Bareos::Fileset <<| tag == $job_tag |>> { conf_dir => $conf_dir }
+    Bareos::Director::Job <<| tag == $job_tag |>> { conf_dir => $conf_dir }
   } else {
-    Bacula::Fileset <<||>> { conf_dir => $conf_dir }
-    Bacula::Director::Job <<||>> { conf_dir => $conf_dir }
+    Bareos::Fileset <<||>> { conf_dir => $conf_dir }
+    Bareos::Director::Job <<||>> { conf_dir => $conf_dir }
   }
 
 
-  Concat::Fragment <<| tag == "bacula-${director}" |>>
+  Concat::Fragment <<| tag == "bareos-${director}" |>>
 
-  concat { "${conf_dir}/bacula-dir.conf":
+  concat { "${conf_dir}/bareos-dir.conf":
     show_diff => false,
   }
 
@@ -128,11 +128,11 @@ class bacula::director (
     show_diff => false,
   }
 
-  bacula::fileset { 'Common':
+  bareos::fileset { 'Common':
     files => ['/etc'],
   }
 
-  bacula::job { 'RestoreFiles':
+  bareos::job { 'RestoreFiles':
     jobtype  => 'Restore',
     fileset  => false,
     jobdef   => false,

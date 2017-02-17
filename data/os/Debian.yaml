@@ -1,2 +1,2 @@
 ---
-bacula::director::postgresql::make_bacula_tables: '/usr/share/bacula-director/make_postgresql_tables'
+bareos::director::postgresql::make_bareos_tables: '/usr/share/bareos-director/make_postgresql_tables'

@@ -1,12 +1,12 @@
-define bacula::director::job (
+define bareos::director::job (
   $content,
-  $conf_dir = $bacula::params::conf_dir, # Overridden at realize
+  $conf_dir = $bareos::params::conf_dir, # Overridden at realize
 ) {
 
-  concat::fragment { "bacula-director-job-${name}":
+  concat::fragment { "bareos-director-job-${name}":
     target  => "${conf_dir}/conf.d/job.conf",
     content => $content,
-    tag     => "bacula-${::bacula::params::director}",
+    tag     => "bareos-${::bareos::params::director}",
     order   => $name,
   }
 }

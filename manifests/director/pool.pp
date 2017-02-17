@@ -1,25 +1,25 @@
-# Define: bacula::director::pool
+# Define: bareos::director::pool
 #
-# This define adds a pool to the bacula director configuration in the conf.d
-# method.  This resources is intended to be used from bacula::storage as a way
+# This define adds a pool to the bareos director configuration in the conf.d
+# method.  This resources is intended to be used from bareos::storage as a way
 # to export the pool resources to the director.
 #
 # Parameters:
-# *  pooltype    - Bacula pool configuration option "Pool Type"
-# *  recycle     - Bacula pool configuration option "Recycle"
-# *  autoprune   - Bacula pool configuration option "AutoPrune"
-# *  volret      - Bacula pool configuration option "Volume Retention"
-# *  maxvoljobs  - Bacula pool configuration option "Maximum Volume Jobs"
-# *  maxvolbytes - Bacula pool configuration option "Maximum Volume Bytes"
-# *  purgeaction - Bacula pool configuration option "Action On Purge"
-# *  label       - Bacula pool configuration option "Label Format"
+# *  pooltype    - Bareos pool configuration option "Pool Type"
+# *  recycle     - Bareos pool configuration option "Recycle"
+# *  autoprune   - Bareos pool configuration option "AutoPrune"
+# *  volret      - Bareos pool configuration option "Volume Retention"
+# *  maxvoljobs  - Bareos pool configuration option "Maximum Volume Jobs"
+# *  maxvolbytes - Bareos pool configuration option "Maximum Volume Bytes"
+# *  purgeaction - Bareos pool configuration option "Action On Purge"
+# *  label       - Bareos pool configuration option "Label Format"
 #
 # Actions:
 #
 # Requires:
 #
 # Sample Usage:
-# bacula::director::pool {
+# bareos::director::pool {
 #   "PuppetLabsPool-Full":
 #     volret      => "2 months",
 #     maxvolbytes => '2000000000',
@@ -28,26 +28,26 @@
 #     label       => "Full-";
 # }
 #
-define bacula::director::pool (
+define bareos::director::pool (
   $volret         = undef,
   $maxvoljobs     = undef,
   $maxvolbytes    = undef,
   $maxvols        = undef,
   $label          = undef,
   $voluseduration = undef,
-  $storage        = $bacula::director::storage,
+  $storage        = $bareos::director::storage,
   $pooltype       = 'Backup',
   $recycle        = 'Yes',
   $autoprune      = 'Yes',
   $purgeaction    = 'Truncate',
-  $conf_dir       = $bacula::params::conf_dir, # Overridden at realize
+  $conf_dir       = $bareos::params::conf_dir, # Overridden at realize
   $next_pool      = undef,
 ) {
 
-  include bacula::params
+  include bareos::params
 
-  concat::fragment { "bacula-director-pool-${name}":
+  concat::fragment { "bareos-director-pool-${name}":
     target  => "${conf_dir}/conf.d/pools.conf",
-    content => template('bacula/bacula-dir-pool.erb');
+    content => template('bareos/bareos-dir-pool.erb');
   }
 }

@@ -1,19 +1,19 @@
-# Define: bacula::fileset
+# Define: bareos::fileset
 #
 # A grouping of files to backup.
 #
-define bacula::fileset (
+define bareos::fileset (
   $files,
   $excludes                     = '',
   Hash[String, String] $options = {'signature' => 'SHA1', 'compression' => 'GZIP9'},
-  $conf_dir                     = $bacula::params::conf_dir, # Overridden at realize
+  $conf_dir                     = $bareos::params::conf_dir, # Overridden at realize
 ) {
 
-  include bacula::common
+  include bareos::common
 
-  @@concat::fragment { "bacula-fileset-${name}":
+  @@concat::fragment { "bareos-fileset-${name}":
     target  => "${conf_dir}/conf.d/fileset.conf",
-    content => template('bacula/fileset.conf.erb'),
-    tag     => "bacula-${::bacula::params::director}",
+    content => template('bareos/fileset.conf.erb'),
+    tag     => "bareos-${::bareos::params::director}",
   }
 }

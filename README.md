@@ -1,14 +1,12 @@
-# Bacula
+# Bareos
 
-[![Puppet Forge](https://img.shields.io/puppetforge/v/zleslie/bacula.svg)]() [![Build Status](https://travis-ci.org/xaque208/puppet-bacula.svg?branch=master)](https://travis-ci.org/xaque208/puppet-bacula)
+[![Puppet Forge](https://img.shields.io/puppetforge/v/sondrup/bareos.svg)]() [![Build Status](https://travis-ci.org/sondrup/puppet-bareos.svg?branch=master)](https://travis-ci.org/sondrup/puppet-bareos)
 
-A puppet module for the Bacula backup system.
+A puppet module for the Bareos backup system.
 
 ## Supported Platforms
 
-* OpenBSD
-* FreeBSD
-* Linux (Debian, Ubuntu, RedHat, Centos, Fedora, SLES)
+* Linux (Debian, Ubuntu)
 
 # Requirements
 
@@ -16,20 +14,20 @@ This module requires that [exported resources] have been setup (e.g. with [Puppe
 
 ## Usage
 
-To understand Bacula, the [Component Overview] in the Bacula documentation is a
+To understand Bareos, the [Component Overview] in the Bareos documentation is a
 useful start to begin understanding the moving parts.
 
 ### A Minimal Setup
 
 What follows here is the bare minimum you would need to get a fully functional
-Bacula environment with Puppet.  This setup assumes that the three components
-of Bacula (Director, Storage, and Client) all run on three separate nodes.  If
+Bareos environment with Puppet.  This setup assumes that the three components
+of Bareos (Director, Storage, and Client) all run on three separate nodes.  If
 desired, there is no reason this setup can not be build up on a single node,
 just updating the hostnames used below to all point to the same system.
 
 #### Defaults
 
-Bacula's functionality depends on connecting several components.  Due to the 
+Bareos's functionality depends on connecting several components.  Due to the 
 numebr of moving pieces in this module, you will likely want to set some 
 site defaults, and tune more specifically where desired.
 
@@ -37,34 +35,34 @@ As such, it is reasonable to set the following hiera data that will allow
 many of the classes in this module to use those defaults sanely.
 
 ```
-bacula::params::storage: 'mydirector.example.com'
-bacula::params::director: 'mydirector.example.com'
+bareos::params::storage: 'mydirector.example.com'
+bareos::params::director: 'mydirector.example.com'
 ```
 
 This may be on the same host, or different hosts, but the name you put here 
 should be the fqdn of the target system.  The Director will require the 
-classification of `bacula::director`, and the Storage node will require the 
-classification of `bacula::storage`.  All nodes will require classification of
- `bacula::client`.
+classification of `bareos::director`, and the Storage node will require the 
+classification of `bareos::storage`.  All nodes will require classification of
+ `bareos::client`.
 
 ##### ** A NOTE FOR UPGRADERS **
 
 Several params have been removed and replaced with the default names.  Update
 your hiera data and parameters as follows.
 
-The following have been replaced with simply `bacula::params::director`.
+The following have been replaced with simply `bareos::params::director`.
 
-* `bacula::params::director_name`
-* `bacula::params::bacula_director`
+* `bareos::params::director_name`
+* `bareos::params::bareos_director`
  
-The following have been replaced with simply `bacula::params::storage`.
+The following have been replaced with simply `bareos::params::storage`.
 
-* `bacula::params::bacula_storage`
-* `bacula::params::storage_name`
+* `bareos::params::bareos_storage`
+* `bareos::params::storage_name`
 
 The default 'Full' and 'Inc' pools no longer get created.  Only the pool 
 called 'Default' is created.  As such, the following parameter have been 
-removed from the `bacula::storage` class.
+removed from the `bareos::storage` class.
 
 *  `$volret_full`
 *  `$volret_incremental`
@@ -82,19 +80,19 @@ To gain the same functionality available in previous versions using a
 default pool for a specific level of backup, create a pool as directed below,
  and set any of the following parameters for your clients. 
 
-* `bacula::client::default_pool_full`
-* `bacula::client::default_pool_inc`
-* `bacula::client::default_pool_diff`
+* `bareos::client::default_pool_full`
+* `bareos::client::default_pool_inc`
+* `bareos::client::default_pool_diff`
 
 The value of these parameters should be set to the resource name of the pool.
 
 #### SSL
 
-To enable SSL for the communication between the various components of Bacula,
+To enable SSL for the communication between the various components of Bareos,
 the hiera data for SSL must be set.
 
 ```yaml
-bacula::params::ssl: true
+bareos::params::ssl: true
 ```
 
 This will ensure that SSL values are processed in the various templates that
@@ -103,12 +101,12 @@ using the SSL directory for Puppet.  The default value for the Puppet SSL
 directory this module will use is `/etc/puppetlabs/puppet/ssl` to support the
 future unified Puppet deployment.
 
-To change the SSL directory, simply set `bacula::params::ssl_dir`.  For
+To change the SSL directory, simply set `bareos::params::ssl_dir`.  For
 example, to use another module for the data source of which SSL directory to
 use for Puppet, something like the following is in order.
 
 ```yaml
-bacula::params::ssl_dir: "%{scope('puppet::params::puppet_ssldir')}"
+bareos::params::ssl_dir: "%{scope('puppet::params::puppet_ssldir')}"
 ```
 
 This example assumes that you are using the [ploperations/puppet] module, but
@@ -123,7 +121,7 @@ transactions.  In its simplest form, the director can be configured with a
 simple declaration:
 
 ```Puppet
-class { 'bacula::director': storage => 'mystorage.example.com' }
+class { 'bareos::director': storage => 'mystorage.example.com' }
 ```
 
 The `storage` parameter here defines which storage server should be used for 
@@ -133,7 +131,7 @@ scenarios where directors to not have the necessary storage devices attached,
 default jobs can be pointed elsewhere.  
 
 Note that if you expect an SD to be located on the Director, you will 
-also need to include the `bacula::storage` class as follows.
+also need to include the `bareos::storage` class as follows.
 
 By default a 'Common' fileset is created.
 
@@ -143,7 +141,7 @@ The storage component allocates disk storage for pools that can be used for
 holding backup data.
 
 ```Puppet
-class { 'bacula::storage': director => 'mydirector.example.com' }
+class { 'bareos::storage': director => 'mydirector.example.com' }
 ```
 
 You will also want a storage pool that defines the retention.  You can define
@@ -151,7 +149,7 @@ You will also want a storage pool that defines the retention.  You can define
  exported resource.
 
 ```Puppet
-  bacula::director::pool { 'Corp':
+  bareos::director::pool { 'Corp':
     volret      => '14 days',
     maxvolbytes => '5g',
     maxvols     => '200',
@@ -165,216 +163,216 @@ You will also want a storage pool that defines the retention.  You can define
 The client component is run on each system that needs something backed up.
 
 ```Puppet
-class { 'bacula::client': director => 'mydirector.example.com' }
+class { 'bareos::client': director => 'mydirector.example.com' }
 ```
 
 To direct all jobs to a specific pool like the one defined above set the 
 following data. 
 
 ```Puppet
-bacula::client::default_pool: 'Corp'
+bareos::client::default_pool: 'Corp'
 ```
 
 ## Creating Backup Jobs
 
 In order for clients to be able to define jobs on the director, exported
 resources are used, thus there was a reliance on PuppetDB availability in the
-environment. In the client manifest the `bacula::job` exports a job 
+environment. In the client manifest the `bareos::job` exports a job 
 definition to the director. If you deploy multiple directors that use the
 same PuppetDB and you don't want each director to collect every job, specify
 a job_tag to group them.
 
 ```puppet
-bacula::job { 'obsidian_logs':
+bareos::job { 'obsidian_logs':
   files => ['/var/log'],
 }
 ```
 
-This resource will create a new `Job` entry in `/etc/bacula/conf.d/job.conf` 
+This resource will create a new `Job` entry in `/etc/bareos/conf.d/job.conf` 
 the next time the director applies it's catalog that will instruct the system
 to backup the files or directories at the paths specified in the `files` 
 parameter.
 
 If a group of jobs will contain the same files, a [FileSet resource] can be
-used to simplify the `bacula::job` resource. This can be exported from the
+used to simplify the `bareos::job` resource. This can be exported from the
 node (ensuring the resource title will be unique when realized) or a simple
-resource specified on the director using the `bacula::fileset` defined type as
+resource specified on the director using the `bareos::fileset` defined type as
 follows:
 
 ```puppet
-bacula::fileset { 'Puppet':
+bareos::fileset { 'Puppet':
   files   => ['/etc/puppet'],
   options => {'compression' => 'LZO' }
 }
 ```
-If you set a job_tag on your `bacula::job`, make sure to also set the tag of
-the `bacula::fileset` to the same value.
+If you set a job_tag on your `bareos::job`, make sure to also set the tag of
+the `bareos::fileset` to the same value.
 
 ## Available types
 
-### bacula::fileset
+### bareos::fileset
 
-Defines a Bacula [FileSet resource]. Parameters are:
+Defines a Bareos [FileSet resource]. Parameters are:
 
 - `files`: string or array of files to backup.
-   Bacula `File` directive.
+   Bareos `File` directive.
 - `excludes`: string or array of files to exclude from a backup.
-  Defaults to `''`.  Bacula `Exclude` directive.
+  Defaults to `''`.  Bareos `Exclude` directive.
 - `options`: hash of options.
-  Defaults to `{'signature' => 'MD5', 'compression' => 'GZIP'}`.  Bacula `Options` directive.
+  Defaults to `{'signature' => 'MD5', 'compression' => 'GZIP'}`.  Bareos `Options` directive.
 
-### bacula::job
+### bareos::job
 
-Define a Bacula [Job resource] resource which can create new `Bacula::Fileset`
+Define a Bareos [Job resource] resource which can create new `Bareos::Fileset`
 resources if needed. Parameters are:
 
-- `files`: array of files to backup as part of `Bacula::Fileset[$name]`
+- `files`: array of files to backup as part of `Bareos::Fileset[$name]`
   Defaults to `[]`.
-- `excludes`: array of files to exclude in `Bacula::Fileset[$name]`
+- `excludes`: array of files to exclude in `Bareos::Fileset[$name]`
   Defaults to `[]`.
 - `jobtype`: one of `Backup` (default), `Restore`, `Admin`, `Verify`, `Copy` or `Migrate`.
-  Defaults to `Backup`. Bacula `Type` directive.
+  Defaults to `Backup`. Bareos `Type` directive.
 - `fileset`: determines whether to use the `Common` fileset (`false`), define a
-   new `Bacula::Fileset[$name]` (`true`) or use a previously
-  defined `Bacula::Fileset` resource (any other string value).
-  Defaults to `true`. Bacula `FileSet` directive.
+   new `Bareos::Fileset[$name]` (`true`) or use a previously
+  defined `Bareos::Fileset` resource (any other string value).
+  Defaults to `true`. Bareos `FileSet` directive.
 - `template`: template to use for the fragment.
-  Defaults to `bacula/job.conf.erb`.
-- `pool`: name of the `bacula::director::pool` to use.
-  Defaults to `bacula::client::default_pool`. Bacula `Pool` directive.
+  Defaults to `bareos/job.conf.erb`.
+- `pool`: name of the `bareos::director::pool` to use.
+  Defaults to `bareos::client::default_pool`. Bareos `Pool` directive.
 - `pool_full`: name of the pool to be used for 'Full' jobs.
-  Defaults to `bacula::client::default_pool_full`. Bacula `Full Backup Pool`
+  Defaults to `bareos::client::default_pool_full`. Bareos `Full Backup Pool`
    directive. 
 - `pool_inc`: name of the pool to be used for 'Incremental' jobs.
-  Defaults to `bacula::client::default_pool_inc`. Bacula `Incremental Backup Pool`
+  Defaults to `bareos::client::default_pool_inc`. Bareos `Incremental Backup Pool`
    directive. 
 - `pool_diff`: name of the pool to be used for 'Incremental' jobs.
-  Defaults to `bacula::client::default_pool_diff`. Bacula `Differential Backup Pool`
+  Defaults to `bareos::client::default_pool_diff`. Bareos `Differential Backup Pool`
    directive. 
-- `jobdef`: name of the `bacula::jobdef` to use.
-  Defaults to `Default`. Bacula `JobDefs` directive.
+- `jobdef`: name of the `bareos::jobdef` to use.
+  Defaults to `Default`. Bareos `JobDefs` directive.
 - `level`: default job level to run the job as.
-  Bacula `Level` directive.
+  Bareos `Level` directive.
 - `accurate`: whether to enable accurate mode. NB, can be memory intensive
   on the client.
-  Defaults to 'no'. Bacula 'Accurate' directive.
+  Defaults to 'no'. Bareos 'Accurate' directive.
 - `messages`: the name of the message resource to use for this job.
-  Defaults to `false` which disables this directive. Bacula `Messages` directive.
-  To ensure compatibility with existing installations, the Bacula `Messages`
+  Defaults to `false` which disables this directive. Bareos `Messages` directive.
+  To ensure compatibility with existing installations, the Bareos `Messages`
   directive is set to `Standard` when `Jobtype` is `Restore` and the `messages`
   parameter is `false`.
 - `restoredir`: the prefix for restore jobs.
-  Defaults to `/tmp/bacula-restores`. Bacula `Where` directive.
+  Defaults to `/tmp/bareos-restores`. Bareos `Where` directive.
 - `sched`: the name of the scheduler resource to use for this job.
-  Defaults to `false` which disables this directive. Bacula `Schedule` directive.
+  Defaults to `false` which disables this directive. Bareos `Schedule` directive.
 - `priority`: the priority of the job.
-  Defaults to `false` which disables this directive. Bacula `Priority` directive.
+  Defaults to `false` which disables this directive. Bareos `Priority` directive.
 - `selection_type`: determines how a copy/migration job will go about selecting what JobIds to migrate
 - `selection_pattern`: gives you fine control over exactly what JobIds are selected for a copy/migration job.
 
-See also `bacula::jobdefs`.
+See also `bareos::jobdefs`.
 
-### bacula::jobdefs
+### bareos::jobdefs
 
-Define a Bacula [JobDefs resource] resource. Parameters are:
+Define a Bareos [JobDefs resource] resource. Parameters are:
 
 - `jobtype`: one of `Backup`, `Restore`, `Admin`, `Verify`, `Copy` or `Migrate`.  Defaults to
-  `Backup`. Bacula `Type` directive.
-- `sched`: name of the `bacula::schedule` to use.  Defaults to `Default`.
-  Bacula `Schedule` directive.
+  `Backup`. Bareos `Type` directive.
+- `sched`: name of the `bareos::schedule` to use.  Defaults to `Default`.
+  Bareos `Schedule` directive.
 - `messages`: which messages resource to deliver to.  Defaults to `Standard`.
-  Bacula `Messages` directive.
-- `priority`: priority of the job.  Defaults to `10`. Bacula `Priority`
+  Bareos `Messages` directive.
+- `priority`: priority of the job.  Defaults to `10`. Bareos `Priority`
   directive.
-- `pool`: name of the `bacula::director::pool` to use.  Defaults to `Default`.
-  Bacula `Pool` directive.
-- `level`: default job level for jobs using this JobDefs.  Bacula `Level`
+- `pool`: name of the `bareos::director::pool` to use.  Defaults to `Default`.
+  Bareos `Pool` directive.
+- `level`: default job level for jobs using this JobDefs.  Bareos `Level`
   directive.
 - `accurate`: whether to enable accurate mode. NB, can be memory intensive on
-  the client.  Defaults to 'no'. Bacula 'Accurate' directive.
+  the client.  Defaults to 'no'. Bareos 'Accurate' directive.
 - `reschedule_on_error`: Enable rescheduling of failed jobs.  Default: false.
-  Bacula `Reschedule On Error` directive.
-- `reschedule_interval`: The time between retries for failed jobs.  Bacula
+  Bareos `Reschedule On Error` directive.
+- `reschedule_interval`: The time between retries for failed jobs.  Bareos
   `Reschedule Interval` directive.
-- `reschedule_times`: The number of retries  for failed jobs.  Bacula
+- `reschedule_times`: The number of retries  for failed jobs.  Bareos
   `Reschedule Times` directive.
 
-### bacula::messages
+### bareos::messages
 
-Define a Bacula [Messages resource]. Parameters are:
+Define a Bareos [Messages resource]. Parameters are:
 
 - `mname`: name of the `Messages` resource.
-  Defaults to `Standard`. Bacula `Name` directive.
+  Defaults to `Standard`. Bareos `Name` directive.
 - `daemon`:
   Defaults to `dir`.
 - `director`:
-  Bacula `Director` directive.  Note this is not just the name of a director,
+  Bareos `Director` directive.  Note this is not just the name of a director,
    but director string as found in the documentation for [Messages resource] 
    under the director option.  The message type must be included with the 
    proper formatting.
 - `append`:
-  Bacula `Append` directive.
+  Bareos `Append` directive.
 - `Catalog`:
-  Bacula `Catalog` directive.
+  Bareos `Catalog` directive.
 - `syslog`:
-  Bacula `Syslog` directive.
+  Bareos `Syslog` directive.
 - `Console`:
-  Bacula `Console` directive.
+  Bareos `Console` directive.
 - `mail`:
-  Bacula `Mail` directive.
+  Bareos `Mail` directive.
 - `Operator`:
-  Bacula `Operator` directive.
+  Bareos `Operator` directive.
 - `mailcmd`:
-  Bacula `Mail Command` directive.
+  Bareos `Mail Command` directive.
 - `operatorcmd`:
-  Bacula `Operator Command` directive.
+  Bareos `Operator Command` directive.
 
-### bacula::schedule
+### bareos::schedule
 
-Define a Bacula [Schedule resource]. Parameter is:
+Define a Bareos [Schedule resource]. Parameter is:
 
 - `runs`: define when a job is run.
-   Bacula `Run` directive.
+   Bareos `Run` directive.
 
-### bacula::director::pool
+### bareos::director::pool
 
-Define a Bacula [Pool resource]. Parameters are:
+Define a Bareos [Pool resource]. Parameters are:
 
 - `pooltype`:
-  Defaults to `Backup`. Bacula `Pool Type` directive.
+  Defaults to `Backup`. Bareos `Pool Type` directive.
 - `recycle`
-  Bacula `Recycle` directive.
+  Bareos `Recycle` directive.
 - `autoprune`:
-   Defaults to `Yes`. Bacula `AutoPrune` directive.
+   Defaults to `Yes`. Bareos `AutoPrune` directive.
 - `volret`:
-  Bacula `Volume Retention` directive.
+  Bareos `Volume Retention` directive.
 - `maxvols`:
-  Bacula `Maximum Volumes` directive.
+  Bareos `Maximum Volumes` directive.
 - `maxvoljobs`:
-  Bacula `Maximum Volume Jobs` directive.
+  Bareos `Maximum Volume Jobs` directive.
 - `maxvolbytes`:
-  Bacula `Maximum Volume Bytes` directive.
+  Bareos `Maximum Volume Bytes` directive.
 - `purgeaction`:
-  Bacula `Action On Purge` directive.
+  Bareos `Action On Purge` directive.
   Defaults to `Truncate`.
 - `label`:
-  Bacula `Label Format` directive.
+  Bareos `Label Format` directive.
 - `voluseduration`:
-  Bacula `Volume Use Duration` directive.
+  Bareos `Volume Use Duration` directive.
 - `storage`: name of the `Storage` resource backing the pool.
-  Defaults to `$bacula::params::storage`. Bacula `Storage` directive.
+  Defaults to `$bareos::params::storage`. Bareos `Storage` directive.
 - `next_pool`: specifies that data from a `Copy` or `Migrate` job should go to the provided pool
 
 
-[Component Overview]: http://www.bacula.org/7.0.x-manuals/en/main/What_is_Bacula.html#SECTION00220000000000000000
-[FileSet resource]: http://www.bacula.org/7.0.x-manuals/en/main/Configuring_Director.html#SECTION001570000000000000000
+[Component Overview]: http://doc.bareos.org/master/html/bareos-manual-main-reference.html#x1-60001.3
+[FileSet resource]: http://doc.bareos.org/master/html/bareos-manual-main-reference.html#x1-1400009.5
 [exported resources]: https://docs.puppetlabs.com/puppet/latest/reference/lang_exported.html
 [PuppetDB]: https://docs.puppetlabs.com/puppetdb
-[JobDefs resource]: http://www.bacula.org/7.0.x-manuals/en/main/Configuring_Director.html#SECTION001540000000000000000
-[Pool resource]: http://www.bacula.org/7.0.x-manuals/en/main/Configuring_Director.html#SECTION0015150000000000000000
-[Schedule resource]: http://www.bacula.org/7.0.x-manuals/en/main/Configuring_Director.html#SECTION001550000000000000000
-[Job resource]: http://www.bacula.org/7.0.x-manuals/en/main/Configuring_Director.html#SECTION001530000000000000000
-[Messages resource]: http://www.bacula.org/7.0.x-manuals/en/main/Configuring_Director.html#SECTION001530000000000000000
+[JobDefs resource]: http://doc.bareos.org/master/html/bareos-manual-main-reference.html#x1-1370009.3
+[Pool resource]: http://doc.bareos.org/master/html/bareos-manual-main-reference.html#x1-1500009.8
+[Schedule resource]: http://doc.bareos.org/master/html/bareos-manual-main-reference.html#x1-1380009.4
+[Job resource]: http://doc.bareos.org/master/html/bareos-manual-main-reference.html#x1-1360009.2
+[Messages resource]: http://doc.bareos.org/master/html/bareos-manual-main-reference.html#x1-17300012
 [ploperations/puppet]: https://forge.puppetlabs.com/ploperations/puppet
 [theforeman/puppet]: https://forge.puppetlabs.com/theforeman/puppet
 

@@ -1,17 +1,17 @@
-# Class: bacula::ssl
+# Class: bareos::ssl
 #
-# Manage the SSL deployment for bacula components, Director, Storage, and File.
-class bacula::ssl (
-  $ssl_dir    = $bacula::params::ssl_dir,
-  $conf_dir   = $bacula::params::conf_dir,
-  $certfile   = $bacula::params::certfile,
-  $keyfile    = $bacula::params::keyfile,
-  $cafile     = $bacula::params::cafile,
-  $packages   = $bacula::params::bacula_client_packages,
-  $user       = $bacula::params::bacula_user,
-  $conf_user  = $bacula::params::bacula_user,
-  $conf_group = $bacula::params::bacula_group,
-) inherits bacula::params {
+# Manage the SSL deployment for bareos components, Director, Storage, and File.
+class bareos::ssl (
+  $ssl_dir    = $bareos::params::ssl_dir,
+  $conf_dir   = $bareos::params::conf_dir,
+  $certfile   = $bareos::params::certfile,
+  $keyfile    = $bareos::params::keyfile,
+  $cafile     = $bareos::params::cafile,
+  $packages   = $bareos::params::bareos_client_packages,
+  $user       = $bareos::params::bareos_user,
+  $conf_user  = $bareos::params::bareos_user,
+  $conf_group = $bareos::params::bareos_group,
+) inherits bareos::params {
 
   $ssl_files = [
     $certfile,
@@ -49,9 +49,9 @@ class bacula::ssl (
   # Now export our key and cert files so the director can collect them,
   # while we've still realized the actual files, except when we're on
   # the director already.
-  #unless ($::fqdn == $bacula::params::director_name) {
-  #  @@bacula::ssl::certfile { $::clientcert: }
-  #  @@bacula::ssl::keyfile  { $::clientcert: }
+  #unless ($::fqdn == $bareos::params::director_name) {
+  #  @@bareos::ssl::certfile { $::clientcert: }
+  #  @@bareos::ssl::keyfile  { $::clientcert: }
   #}
 
   file { $cafile:
@@ -60,7 +60,7 @@ class bacula::ssl (
     require => File["${conf_dir}/ssl"],
   }
 
-  exec { 'generate_bacula_dhkey':
+  exec { 'generate_bareos_dhkey':
     command => 'openssl dhparam -out dh1024.pem -5 1024',
     path    => '/usr/bin:/usr/sbin:/bin:/sbin:/usr/local/bin:/usr/local/sbin',
     cwd     => "${conf_dir}/ssl",

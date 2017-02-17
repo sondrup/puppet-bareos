@@ -1,8 +1,8 @@
-# == Define: bacula::messages
+# == Define: bareos::messages
 #
 # Create a Messages resource on the $daemon (director, storage or file).
 #
-define bacula::messages (
+define bareos::messages (
   $mname       = 'Standard',
   $daemon      = 'dir',
   $director    = undef,
@@ -17,11 +17,11 @@ define bacula::messages (
 ) {
   validate_re($daemon, ['^dir', '^sd', '^fd'])
 
-  include bacula::common
-  include bacula::params
+  include bareos::common
+  include bareos::params
 
-  concat::fragment { "bacula-messages-${daemon}-${name}":
-    target  => "${bacula::params::conf_dir}/bacula-${daemon}.conf",
-    content => template('bacula/messages.erb'),
+  concat::fragment { "bareos-messages-${daemon}-${name}":
+    target  => "${bareos::params::conf_dir}/bareos-${daemon}.conf",
+    content => template('bareos/messages.erb'),
   }
 }

@@ -1,112 +1,67 @@
-# Class: bacula::params
+# Class: bareos::params
 #
 # Set some platform specific paramaters.
 #
-class bacula::params {
+class bareos::params {
 
   $file_retention = '45 days'
   $job_retention  = '6 months'
   $autoprune      = 'yes'
   $monitor        = true
-  $ssl            = hiera('bacula::params::ssl', false)
-  $ssl_dir        = hiera('bacula::params::ssl_dir', '/etc/puppetlabs/puppet/ssl')
-  $device_seltype = 'bacula_store_t'
+  $ssl            = hiera('bareos::params::ssl', false)
+  $ssl_dir        = hiera('bareos::params::ssl_dir', '/etc/puppetlabs/puppet/ssl')
+  $device_seltype = 'bareos_store_t'
 
   validate_bool($ssl)
 
   if $facts['operatingsystem'] in ['RedHat', 'CentOS', 'Fedora', 'Scientific'] {
-    $db_type        = hiera('bacula::params::db_type', 'postgresql')
+    $db_type        = hiera('bareos::params::db_type', 'postgresql')
   } else {
-    $db_type        = hiera('bacula::params::db_type', 'pgsql')
+    $db_type        = hiera('bareos::params::db_type', 'pgsql')
   }
 
-  $storage          = hiera('bacula::params::storage', $::fqdn)
-  $director         = hiera('bacula::params::director', $::fqdn)
-  $director_address = hiera('bacula::params::director_address', $director)
-  $job_tag          = hiera('bacula::params::job_tag', '')
+  $storage          = hiera('bareos::params::storage', $::fqdn)
+  $director         = hiera('bareos::params::director', $::fqdn)
+  $director_address = hiera('bareos::params::director_address', $director)
+  $job_tag          = hiera('bareos::params::job_tag', '')
 
   case $facts['operatingsystem'] {
     'Ubuntu','Debian': {
-      $bacula_director_packages = [ 'bacula-director-common', "bacula-director-${db_type}", 'bacula-console' ]
-      $bacula_director_services = [ 'bacula-director' ]
-      $bacula_storage_packages  = [ 'bacula-sd', "bacula-sd-${db_type}" ]
-      $bacula_storage_services  = [ 'bacula-sd' ]
-      $bacula_client_packages   = 'bacula-client'
-      $bacula_client_services   = 'bacula-fd'
-      $conf_dir                 = '/etc/bacula'
-      $bacula_dir               = '/etc/bacula/ssl'
-      $client_config            = '/etc/bacula/bacula-fd.conf'
-      $homedir                  = '/var/lib/bacula'
-      $rundir                   = '/var/run/bacula'
-      $bacula_user              = 'bacula'
-      $bacula_group             = $bacula_user
-    }
-    'SLES': {
-      $bacula_director_packages = [ 'bacula-director-common', "bacula-director-${db_type}", 'bacula-console' ]
-      $bacula_director_services = [ 'bacula-dir' ]
-      $bacula_storage_packages  = [ 'bacula-sd', "bacula-sd-${db_type}" ]
-      $bacula_storage_services  = [ 'bacula-sd' ]
-      $bacula_client_packages   = 'bacula-client'
-      $bacula_client_services   = 'bacula-fd'
-      $conf_dir                 = '/etc/bacula'
-      $bacula_dir               = '/etc/bacula/ssl'
-      $client_config            = '/etc/bacula/bacula-fd.conf'
-      $homedir                  = '/var/lib/bacula'
-      $rundir                   = '/var/run'
-      $bacula_user              = 'bacula'
-      $bacula_group             = $bacula_user
+      $bareos_director_packages = [ 'bareos-director-common', "bareos-director-${db_type}", 'bareos-console' ]
+      $bareos_director_services = [ 'bareos-director' ]
+      $bareos_storage_packages  = [ 'bareos-sd', "bareos-sd-${db_type}" ]
+      $bareos_storage_services  = [ 'bareos-sd' ]
+      $bareos_client_packages   = 'bareos-client'
+      $bareos_client_services   = 'bareos-fd'
+      $conf_dir                 = '/etc/bareos'
+      $bareos_dir               = '/etc/bareos/ssl'
+      $client_config            = '/etc/bareos/bareos-fd.conf'
+      $homedir                  = '/var/lib/bareos'
+      $rundir                   = '/var/run/bareos'
+      $bareos_user              = 'bareos'
+      $bareos_group             = $bareos_user
     }
     'RedHat','CentOS','Fedora','Scientific': {
       if 0 + $facts['operatingsystemmajrelease'] < 7 or ($facts['operatingsystem'] == 'Fedora' and 0 + $facts['operatingsystemmajrelease'] < 17) {
-        $bacula_director_packages = [ 'bacula-director-common', "bacula-director-${db_type}", 'bacula-console' ]
-        $bacula_storage_packages  = [ 'bacula-storage-common', "bacula-storage-${db_type}" ]
+        $bareos_director_packages = [ 'bareos-director-common', "bareos-director-${db_type}", 'bareos-console' ]
+        $bareos_storage_packages  = [ 'bareos-storage-common', "bareos-storage-${db_type}" ]
       } else {
-        $bacula_director_packages = [ 'bacula-director', 'bacula-console' ]
-        $bacula_storage_packages  = [ 'bacula-storage' ]
+        $bareos_director_packages = [ 'bareos-director', 'bareos-console' ]
+        $bareos_storage_packages  = [ 'bareos-storage' ]
       }
-      $bacula_director_services = [ 'bacula-dir' ]
-      $bacula_storage_services  = [ 'bacula-sd' ]
-      $bacula_client_packages   = 'bacula-client'
-      $bacula_client_services   = 'bacula-fd'
-      $conf_dir                 = '/etc/bacula'
-      $bacula_dir               = '/etc/bacula/ssl'
-      $client_config            = '/etc/bacula/bacula-fd.conf'
-      $homedir                  = '/var/spool/bacula'
+      $bareos_director_services = [ 'bareos-dir' ]
+      $bareos_storage_services  = [ 'bareos-sd' ]
+      $bareos_client_packages   = 'bareos-client'
+      $bareos_client_services   = 'bareos-fd'
+      $conf_dir                 = '/etc/bareos'
+      $bareos_dir               = '/etc/bareos/ssl'
+      $client_config            = '/etc/bareos/bareos-fd.conf'
+      $homedir                  = '/var/spool/bareos'
       $rundir                   = '/var/run'
-      $bacula_user              = 'bacula'
-      $bacula_group             = $bacula_user
+      $bareos_user              = 'bareos'
+      $bareos_group             = $bareos_user
     }
-    'FreeBSD': {
-      $bacula_director_packages = [ 'bacula-server' ]
-      $bacula_director_services = [ 'bacula-dir' ]
-      $bacula_storage_packages  = [ 'bacula-server' ]
-      $bacula_storage_services  = [ 'bacula-sd' ]
-      $bacula_client_packages   = 'sysutils/bacula-client'
-      $bacula_client_services   = 'bacula-fd'
-      $conf_dir                 = '/usr/local/etc/bacula'
-      $bacula_dir               = '/usr/local/etc/bacula/ssl'
-      $client_config            = '/usr/local/etc/bacula/bacula-fd.conf'
-      $rundir                   = '/var/run'
-      $homedir                  = '/var/db/bacula'
-      $bacula_user              = 'bacula'
-      $bacula_group             = 'bacula'
-    }
-    'OpenBSD': {
-      $bacula_director_packages = [ 'bacula-server', "bacula-${db_type}" ]
-      $bacula_director_services = [ 'bacula_dir' ]
-      $bacula_storage_packages  = [ 'bacula-server', "bacula-${db_type}" ]
-      $bacula_storage_services  = [ 'bacula_sd' ]
-      $bacula_client_packages   = 'bacula-client'
-      $bacula_client_services   = 'bacula_fd'
-      $conf_dir                 = '/etc/bacula'
-      $bacula_dir               = '/etc/bacula/ssl'
-      $client_config            = '/etc/bacula/bacula-fd.conf'
-      $rundir                   = '/var/run'
-      $homedir                  = '/var/bacula'
-      $bacula_user              = '_bacula'
-      $bacula_group             = '_bacula'
-    }
-    default: { fail("bacula::params has no love for ${facts['operatingsystem']}") }
+    default: { fail("bareos::params has no love for ${facts['operatingsystem']}") }
   }
 
   $certfile = "${conf_dir}/ssl/${::clientcert}_cert.pem"

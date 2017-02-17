@@ -1,13 +1,13 @@
-# == Define: bacula::ssl::keyfile
+# == Define: bareos::ssl::keyfile
 #
 # Type to help the director install new client keys.
 #
-define bacula::ssl::keyfile {
+define bareos::ssl::keyfile {
   file { "keyfile-${name}":
-    path    => "${bacula::params::conf_dir}/ssl/${name}_key.pem",
-    owner   => $bacula::params::bacula_user,
+    path    => "${bareos::params::conf_dir}/ssl/${name}_key.pem",
+    owner   => $bareos::params::bareos_user,
     group   => '0',
     mode    => '0640',
-    content => hiera("bacula_ssl_keyfile_${name}"),
+    content => hiera("bareos_ssl_keyfile_${name}"),
   }
 }

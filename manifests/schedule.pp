@@ -1,16 +1,16 @@
-# Define: bacula::schedule
+# Define: bareos::schedule
 #
 # Creates a schedule to which jobs and jobdefs can adhere.
 #
-define bacula::schedule (
+define bareos::schedule (
   Array $runs,
-  $conf_dir = $bacula::params::conf_dir,
+  $conf_dir = $bareos::params::conf_dir,
 ) {
 
   validate_array($runs)
 
-  concat::fragment { "bacula-schedule-${name}":
+  concat::fragment { "bareos-schedule-${name}":
     target  => "${conf_dir}/conf.d/schedule.conf",
-    content => template('bacula/schedule.conf.erb'),
+    content => template('bareos/schedule.conf.erb'),
   }
 }

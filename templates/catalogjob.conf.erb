@@ -1,16 +1,16 @@
 Job {
     Storage = CatalogStorage
     Name             = <%= @name %>
-    Client = Bacula-Director
+    Client = Bareos-Director
     Type = Backup
     Level = Full
     FileSet="Catalog"
     Schedule = "WeeklyCycleAfterBackup"
     # This creates an ASCII copy of the catalog
-    RunBeforeJob = "/etc/bacula/scripts/make_catalog_backup.pl DBCatalog"
+    RunBeforeJob = "/etc/bareos/scripts/make_catalog_backup.pl DBCatalog"
     # This deletes the copy of the catalog
-    RunAfterJob  = "/etc/bacula/scripts/delete_catalog_backup"
-    Write Bootstrap = "/db/bacula/bootstraps/BackupCatalog.bsr"
+    RunAfterJob  = "/etc/bareos/scripts/delete_catalog_backup"
+    Write Bootstrap = "/db/bareos/bootstraps/BackupCatalog.bsr"
     Priority = 11                   # run after main backups run for the night
     Pool = Catalog-Pool
     Full Backup Pool = Catalog-Pool

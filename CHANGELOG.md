@@ -45,7 +45,7 @@ This release contains bugfixes and testing updates for puppet4.
 - Include ipaddress fact in testing
 
 #### Features
-- Allow user specified device mode on bacula::storage
+- Allow user specified device mode on bareos::storage
 
 ## 2015-10-20 Release 3.0.0
 ### Summary
@@ -66,7 +66,7 @@ instances of the deprecated variables and replace them.**  See the README.
 ## 2015-10-18 Release 2.0.2
 ### Summary
 This release contains improvements to IP address handling to better support
-IPv6 for all components of the bacula system.
+IPv6 for all components of the bareos system.
 
 #### Features
 - Add function to validate and determine the inet family of an IP

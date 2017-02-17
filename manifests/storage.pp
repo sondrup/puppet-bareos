@@ -1,65 +1,65 @@
-# Class: bacula::storage
+# Class: bareos::storage
 #
-# Configures bacula storage daemon
+# Configures bareos storage daemon
 #
-class bacula::storage (
+class bareos::storage (
   $port                    = '9103',
   $listen_address          = $::ipaddress,
   $storage                 = $::fqdn, # storage here is not params::storage
   $password                = 'secret',
   $device_name             = "${::fqdn}-device",
-  $device                  = '/bacula',
+  $device                  = '/bareos',
   $device_mode             = '0770',
-  $device_owner            = $bacula::params::bacula_user,
-  $device_seltype          = $bacula::params::device_seltype,
+  $device_owner            = $bareos::params::bareos_user,
+  $device_seltype          = $bareos::params::device_seltype,
   $media_type              = 'File',
   $maxconcurjobs           = '5',
-  $packages                = $bacula::params::bacula_storage_packages,
-  $services                = $bacula::params::bacula_storage_services,
-  $homedir                 = $bacula::params::homedir,
-  $rundir                  = $bacula::params::rundir,
-  $conf_dir                = $bacula::params::conf_dir,
-  $director                = $bacula::params::director,
-  $user                    = $bacula::params::bacula_user,
-  $group                   = $bacula::params::bacula_group,
-) inherits bacula::params {
+  $packages                = $bareos::params::bareos_storage_packages,
+  $services                = $bareos::params::bareos_storage_services,
+  $homedir                 = $bareos::params::homedir,
+  $rundir                  = $bareos::params::rundir,
+  $conf_dir                = $bareos::params::conf_dir,
+  $director                = $bareos::params::director,
+  $user                    = $bareos::params::bareos_user,
+  $group                   = $bareos::params::bareos_group,
+) inherits bareos::params {
 
-  include bacula::common
-  include bacula::ssl
-  include bacula::virtual
+  include bareos::common
+  include bareos::ssl
+  include bareos::virtual
 
   realize(Package[$packages])
 
   service { $services:
     ensure    => running,
     enable    => true,
-    subscribe => File[$bacula::ssl::ssl_files],
+    subscribe => File[$bareos::ssl::ssl_files],
     require   => Package[$packages],
   }
 
-  concat::fragment { 'bacula-storage-header':
+  concat::fragment { 'bareos-storage-header':
     order   => 00,
-    target  => "${conf_dir}/bacula-sd.conf",
-    content => template('bacula/bacula-sd-header.erb'),
+    target  => "${conf_dir}/bareos-sd.conf",
+    content => template('bareos/bareos-sd-header.erb'),
   }
 
-  concat::fragment { 'bacula-storage-dir':
-    target  => "${conf_dir}/bacula-sd.conf",
-    content => template('bacula/bacula-sd-dir.erb'),
+  concat::fragment { 'bareos-storage-dir':
+    target  => "${conf_dir}/bareos-sd.conf",
+    content => template('bareos/bareos-sd-dir.erb'),
   }
 
-  bacula::messages { 'Standard-sd':
+  bareos::messages { 'Standard-sd':
     daemon   => 'sd',
     director => "${director}-dir = all",
     syslog   => 'all, !skipped',
-    append   => '"/var/log/bacula/bacula-sd.log" = all, !skipped',
+    append   => '"/var/log/bareos/bareos-sd.log" = all, !skipped',
   }
 
   # Realize the clause the director is exporting here so we can allow access to
-  # the storage daemon Adds an entry to ${conf_dir}/bacula-sd.conf
-  Concat::Fragment <<| tag == "bacula-storage-dir-${director}" |>>
+  # the storage daemon Adds an entry to ${conf_dir}/bareos-sd.conf
+  Concat::Fragment <<| tag == "bareos-storage-dir-${director}" |>>
 
-  concat { "${conf_dir}/bacula-sd.conf":
+  concat { "${conf_dir}/bareos-sd.conf":
     owner     => 'root',
     group     => $group,
     mode      => '0640',
@@ -78,12 +78,12 @@ class bacula::storage (
     }
   }
 
-  @@bacula::director::storage { $storage:
+  @@bareos::director::storage { $storage:
     port          => $port,
     password      => $password,
     device_name   => $device_name,
     media_type    => $media_type,
     maxconcurjobs => $maxconcurjobs,
-    tag           => "bacula-${::bacula::params::storage}",
+    tag           => "bareos-${::bareos::params::storage}",
   }
 }

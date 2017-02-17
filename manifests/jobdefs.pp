@@ -1,6 +1,6 @@
-# Define: bacula::jobdefs
+# Define: bareos::jobdefs
 #
-# This define adds a jobdefs entry on the bacula director for reference by the client configurations.
+# This define adds a jobdefs entry on the bareos director for reference by the client configurations.
 #
 # Parameters:
 #
@@ -10,7 +10,7 @@
 #
 # Sample Usage:
 #
-define bacula::jobdefs (
+define bareos::jobdefs (
   $jobtype             = 'Backup',
   $sched               = 'Default',
   $messages            = 'Standard',
@@ -25,11 +25,11 @@ define bacula::jobdefs (
 
   validate_re($jobtype, ['^Backup', '^Restore', '^Admin', '^Verify', '^Copy', '^Migrate'])
 
-  include bacula::params
-  $conf_dir = $bacula::params::conf_dir
+  include bareos::params
+  $conf_dir = $bareos::params::conf_dir
 
-  concat::fragment { "bacula-jobdefs-${name}":
+  concat::fragment { "bareos-jobdefs-${name}":
     target  => "${conf_dir}/conf.d/jobdefs.conf",
-    content => template('bacula/jobdefs.conf.erb'),
+    content => template('bareos/jobdefs.conf.erb'),
   }
 }

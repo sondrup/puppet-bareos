@@ -1,15 +1,15 @@
-define bacula::director::client (
+define bareos::director::client (
   $port           = '9102',
   $client         = $::fqdn,
   $password       = 'secret',
-  $conf_dir       = $bacula::params::conf_dir, # Overridden at realize
-  $file_retention = $bacula::params::file_retention,
-  $job_retention  = $bacula::params::job_retention,
-  $autoprune      = $bacula::params::autoprune,
+  $conf_dir       = $bareos::params::conf_dir, # Overridden at realize
+  $file_retention = $bareos::params::file_retention,
+  $job_retention  = $bareos::params::job_retention,
+  $autoprune      = $bareos::params::autoprune,
 ) {
 
-  concat::fragment { "bacula-director-client-${client}":
+  concat::fragment { "bareos-director-client-${client}":
     target  => "${conf_dir}/conf.d/client.conf",
-    content => template('bacula/bacula-dir-client.erb'),
+    content => template('bareos/bareos-dir-client.erb'),
   }
 }

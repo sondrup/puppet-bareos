@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'bacula::storage' do
+describe 'bareos::storage' do
   require 'hiera'
   let(:hiera_config) { 'hiera.yaml' }
   context 'Debian' do
@@ -11,7 +11,7 @@ describe 'bacula::storage' do
         :ipaddress => '10.0.0.1'
       }
     }
-    it { should contain_class('bacula::storage') }
+    it { should contain_class('bareos::storage') }
   end
   context 'RedHat' do
     let(:facts) {
@@ -24,13 +24,13 @@ describe 'bacula::storage' do
         :ipaddress => '10.0.0.1'
       }
     }
-    it { should contain_class('bacula::storage') }
+    it { should contain_class('bareos::storage') }
     context 'New packages' do
-      it { should contain_package('bacula-storage').with(
+      it { should contain_package('bareos-storage').with(
           'ensure' => 'present',
         )
       }
-      it { should_not contain_package('bacula-storage-common') }
+      it { should_not contain_package('bareos-storage-common') }
     end
     context 'Old packages' do
       let(:facts) do
@@ -41,11 +41,11 @@ describe 'bacula::storage' do
           }
         )
       end
-      it { should contain_package('bacula-storage-common').with(
+      it { should contain_package('bareos-storage-common').with(
           'ensure' => 'present',
         )
       }
-      it { should_not contain_package('bacula-storage') }
+      it { should_not contain_package('bareos-storage') }
     end
   end
 end

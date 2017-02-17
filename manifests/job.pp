@@ -1,6 +1,6 @@
-# Define: bacula::job
+# Define: bareos::job
 #
-# This class installs a bacula job on the director.  This can be used for specific applications as well as general host backups
+# This class installs a bareos job on the director.  This can be used for specific applications as well as general host backups
 #
 # Parameters:
 #   * files - An array of files that you wish to get backed up on this job for
@@ -12,7 +12,7 @@
 #     job will attempt to use the fileset named "Common". If set to anything
 #     else, provided it's a String, that named fileset will be used.
 #     NOTE: the fileset Common or the defined fileset must be declared elsewhere
-#     for this to work. See Class::Bacula for details.
+#     for this to work. See Class::Bareos for details.
 #   * runscript - Array of hash(es) containing RunScript directives.
 #   * reshedule_on_error - boolean for enableing disabling job option "Reschedule On Error"
 #   * reshedule_interval - string time-spec for job option "Reschedule Interval"
@@ -25,34 +25,34 @@
 #   * priority - string containing the priority number for the job
 #     set to false to disable this option
 #   * job_tag - string that might be used for grouping of jobs. Pass this to
-#     bacula::director to only collect jobs that match this tag.
+#     bareos::director to only collect jobs that match this tag.
 #
 # Actions:
 #   * Exports job fragment for consuption on the director
 #
 # Requires:
-#   * Class::Bacula {}
+#   * Class::Bareos {}
 #
 # Sample Usage:
-#  bacula::job { "${fqdn}-common":
+#  bareos::job { "${fqdn}-common":
 #    fileset => "Root",
 #  }
 #
-#  bacula::job { "${fqdn}-mywebapp":
+#  bareos::job { "${fqdn}-mywebapp":
 #    files    => ["/var/www/mywebapp","/etc/mywebapp"],
 #    excludes => ["/var/www/mywebapp/downloads"],
 #  }
 #
-define bacula::job (
+define bareos::job (
   Array $files         = [],
   Array $excludes      = [],
   $jobtype             = 'Backup',
   $fileset             = true,
-  $template            = 'bacula/job.conf.erb',
-  $pool                = $bacula::client::default_pool,
-  $pool_full           = $bacula::client::default_pool_full,
-  $pool_inc            = $bacula::client::default_pool_inc,
-  $pool_diff           = $bacula::client::default_pool_diff,
+  $template            = 'bareos/job.conf.erb',
+  $pool                = $bareos::client::default_pool,
+  $pool_full           = $bareos::client::default_pool_full,
+  $pool_inc            = $bareos::client::default_pool_inc,
+  $pool_diff           = $bareos::client::default_pool_diff,
   $storage             = undef,
   $jobdef              = 'Default',
   Array $runscript     = [],
@@ -62,19 +62,19 @@ define bacula::job (
   $reschedule_interval = '1 hour',
   $reschedule_times    = '10',
   $messages            = false,
-  $restoredir          = '/tmp/bacula-restores',
+  $restoredir          = '/tmp/bareos-restores',
   $sched               = false,
   $priority            = false,
-  $job_tag             = $bacula::params::job_tag,
+  $job_tag             = $bareos::params::job_tag,
   $selection_type      = undef,
   $selection_pattern   = undef,
 ) {
   validate_re($jobtype, ['^Backup', '^Restore', '^Admin', '^Verify', '^Copy', '^Migrate'])
   validate_re($accurate, ['^yes', '^no'])
 
-  include bacula::common
-  include bacula::params
-  $conf_dir = $bacula::params::conf_dir
+  include bareos::common
+  include bareos::params
+  $conf_dir = $bareos::params::conf_dir
 
   # if the fileset is not defined, we fall back to one called "Common"
   if is_string($fileset) {
@@ -82,7 +82,7 @@ define bacula::job (
   } elsif $fileset == true {
     if $files == '' { err('you tell me to create a fileset, but no files given') }
     $fileset_real = $name
-    bacula::fileset { $name:
+    bareos::fileset { $name:
       files    => $files,
       excludes => $excludes
       }
@@ -91,12 +91,12 @@ define bacula::job (
   }
 
   if empty($job_tag) {
-    $real_tags = "bacula-${::bacula::params::director}"
+    $real_tags = "bareos-${::bareos::params::director}"
   } else {
-    $real_tags = ["bacula-${::bacula::params::director}", $job_tag]
+    $real_tags = ["bareos-${::bareos::params::director}", $job_tag]
   }
 
-  @@bacula::director::job { $name:
+  @@bareos::director::job { $name:
     content => template($template),
     tag     => $real_tags,
   }

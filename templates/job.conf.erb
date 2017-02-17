@@ -16,13 +16,13 @@ Job {
 <%   end -%>
 <% elsif @jobtype == "Backup" -%>
 <% if @pool_full -%>
-    Full Backup Pool        = <%= scope.lookupvar('bacula::params::storage') %>-Pool-Full
+    Full Backup Pool        = <%= scope.lookupvar('bareos::params::storage') %>-Pool-Full
 <% end -%>
 <% if @pool_inc -%>
-    Incremental Backup Pool  = <%= scope.lookupvar('bacula::params::storage') %>-Pool-Inc
+    Incremental Backup Pool  = <%= scope.lookupvar('bareos::params::storage') %>-Pool-Inc
 <% end -%>
 <% if @pool_diff -%>
-    Differential Backup Pool = <%= scope.lookupvar('bacula::params::bacula_storage') %>-Pool-Diff
+    Differential Backup Pool = <%= scope.lookupvar('bareos::params::bareos_storage') %>-Pool-Diff
 <% end -%>
 <% elsif @jobtype == "Copy" or @jobtype == "Migrate" -%>
 <% if @selection_type -%>
@@ -59,6 +59,6 @@ Job {
 <% if @priority -%>
     Priority         = <%= @priority %>
 <% end -%>
-<%= scope.function_template(['bacula/_job_reschedule.erb']) -%>
+<%= scope.function_template(['bareos/_job_reschedule.erb']) -%>
 }
 

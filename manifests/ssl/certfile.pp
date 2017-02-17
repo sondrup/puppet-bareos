@@ -1,13 +1,13 @@
-# == Define: bacula::ssl::certfile
+# == Define: bareos::ssl::certfile
 #
 # Type to help the director install new client certificates.
 #
-define bacula::ssl::certfile {
+define bareos::ssl::certfile {
   file { "certfile-${name}":
-    path    => "${bacula::params::conf_dir}/ssl/${name}_cert.pem",
-    owner   => $bacula::params::bacula_user,
+    path    => "${bareos::params::conf_dir}/ssl/${name}_cert.pem",
+    owner   => $bareos::params::bareos_user,
     group   => '0',
     mode    => '0640',
-    content => hiera("bacula_ssl_certfile_${name}"),
+    content => hiera("bareos_ssl_certfile_${name}"),
   }
 }

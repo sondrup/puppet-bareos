@@ -1,20 +1,20 @@
-# Class: bacula::director::postgresql
+# Class: bareos::director::postgresql
 #
-# Deploys a postgres database server for hosting the Bacula director
+# Deploys a postgres database server for hosting the Bareos director
 # database.
 #
 # Sample Usage:
 #
 #   none
 #
-class bacula::director::postgresql(
-  String $make_bacula_tables = '',
-  String $db_name            = $bacula::director::db_name,
-  String $db_pw              = $bacula::director::db_pw,
-  String $db_user            = $bacula::director::db_user,
-  Array $services            = $bacula::params::bacula_director_services,
-  String $user               = $bacula::params::bacula_user,
-) inherits bacula::params {
+class bareos::director::postgresql(
+  String $make_bareos_tables = '',
+  String $db_name            = $bareos::director::db_name,
+  String $db_pw              = $bareos::director::db_pw,
+  String $db_user            = $bareos::director::db_user,
+  Array $services            = $bareos::params::bareos_director_services,
+  String $user               = $bareos::params::bareos_user,
+) inherits bareos::params {
 
   require postgresql::server
 
@@ -25,7 +25,7 @@ class bacula::director::postgresql(
     locale   => 'C',
   }
 
-  exec { "/bin/sh ${make_bacula_tables}":
+  exec { "/bin/sh ${make_bareos_tables}":
     user        => $user,
     refreshonly => true,
     environment => ["db_name=${db_name}"],
