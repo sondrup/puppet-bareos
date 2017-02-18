@@ -15,22 +15,31 @@ class bareos::storage (
   $media_type              = 'File',
   $maxconcurjobs           = '5',
   $packages                = $bareos::params::bareos_storage_packages,
-  $services                = $bareos::params::bareos_storage_services,
+  $service                 = $bareos::params::bareos_storage_service,
   $homedir                 = $bareos::params::homedir,
   $rundir                  = $bareos::params::rundir,
   $conf_dir                = $bareos::params::conf_dir,
   $director                = $bareos::params::director,
   $user                    = $bareos::params::bareos_user,
   $group                   = $bareos::params::bareos_group,
+  $include_repo            = true,
+  $install                 = true,
 ) inherits bareos::params {
 
   include bareos::common
   include bareos::ssl
   include bareos::virtual
 
-  realize(Package[$packages])
+  if $include_repo {
+    include '::bareos::repo'
+  }
 
-  service { $services:
+  if $install {
+    realize(Package[$packages])
+  }
+
+  service { 'bareos-sd':
+    name      => $service,
     ensure    => running,
     enable    => true,
     subscribe => File[$bareos::ssl::ssl_files],
@@ -64,7 +73,7 @@ class bareos::storage (
     group     => $group,
     mode      => '0640',
     show_diff => false,
-    notify    => Service[$services],
+    notify    => Service['bareos-sd'],
   }
 
   if $media_type == 'File' {

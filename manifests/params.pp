@@ -17,7 +17,7 @@ class bareos::params {
   if $facts['operatingsystem'] in ['RedHat', 'CentOS', 'Fedora', 'Scientific'] {
     $db_type        = hiera('bareos::params::db_type', 'postgresql')
   } else {
-    $db_type        = hiera('bareos::params::db_type', 'pgsql')
+    $db_type        = hiera('bareos::params::db_type', 'postgresql')
   }
 
   $storage          = hiera('bareos::params::storage', $::fqdn)
@@ -27,17 +27,17 @@ class bareos::params {
 
   case $facts['operatingsystem'] {
     'Ubuntu','Debian': {
-      $bareos_director_packages = [ 'bareos-director-common', "bareos-director-${db_type}", 'bareos-console' ]
-      $bareos_director_services = [ 'bareos-director' ]
-      $bareos_storage_packages  = [ 'bareos-sd', "bareos-sd-${db_type}" ]
-      $bareos_storage_services  = [ 'bareos-sd' ]
+      $bareos_director_packages = [ 'bareos-director', "bareos-database-${db_type}", 'bareos-bconsole' ]
+      $bareos_director_service  = 'bareos-dir'
+      $bareos_storage_packages  = [ 'bareos-storage' ]
+      $bareos_storage_service   = 'bareos-sd'
       $bareos_client_packages   = 'bareos-client'
-      $bareos_client_services   = 'bareos-fd'
+      $bareos_client_service    = 'bareos-fd'
       $conf_dir                 = '/etc/bareos'
       $bareos_dir               = '/etc/bareos/ssl'
       $client_config            = '/etc/bareos/bareos-fd.conf'
       $homedir                  = '/var/lib/bareos'
-      $rundir                   = '/var/run/bareos'
+      $rundir                   = $homedir
       $bareos_user              = 'bareos'
       $bareos_group             = $bareos_user
     }
@@ -49,10 +49,10 @@ class bareos::params {
         $bareos_director_packages = [ 'bareos-director', 'bareos-console' ]
         $bareos_storage_packages  = [ 'bareos-storage' ]
       }
-      $bareos_director_services = [ 'bareos-dir' ]
-      $bareos_storage_services  = [ 'bareos-sd' ]
+      $bareos_director_service  = 'bareos-dir'
+      $bareos_storage_service   = 'bareos-sd'
       $bareos_client_packages   = 'bareos-client'
-      $bareos_client_services   = 'bareos-fd'
+      $bareos_client_service    = 'bareos-fd'
       $conf_dir                 = '/etc/bareos'
       $bareos_dir               = '/etc/bareos/ssl'
       $client_config            = '/etc/bareos/bareos-fd.conf'

@@ -12,7 +12,6 @@ class bareos::director::postgresql(
   String $db_name            = $bareos::director::db_name,
   String $db_pw              = $bareos::director::db_pw,
   String $db_user            = $bareos::director::db_user,
-  Array $services            = $bareos::params::bareos_director_services,
   String $user               = $bareos::params::bareos_user,
 ) inherits bareos::params {
 
@@ -30,7 +29,7 @@ class bareos::director::postgresql(
     refreshonly => true,
     environment => ["db_name=${db_name}"],
     subscribe   => Postgresql::Server::Db[$db_name],
-    notify      => Service[$services],
+    notify      => Service['bareos-director'],
     require     => [
       Postgresql::Server::Db[$db_name],
     ]

@@ -30,6 +30,8 @@ Pool {
 # Generic catalog service
 Catalog {
     Name   = MyCatalog
+    dbdriver = "<%= @db_type %>"
+    dbaddress = "<%= @db_address %>";
     dbname = "<%= @db_name %>";
     dbuser = "<%= @db_user %>";
     dbpassword = "<%= @db_pw %>"

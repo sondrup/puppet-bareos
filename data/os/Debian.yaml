@@ -1,2 +1,2 @@
 ---
-bareos::director::postgresql::make_bareos_tables: '/usr/share/bareos-director/make_postgresql_tables'
+bareos::director::postgresql::make_bareos_tables: '/usr/lib/bareos/scripts/make_bareos_tables'

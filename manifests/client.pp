@@ -12,7 +12,7 @@ class bareos::client (
   $password            = 'secret',
   $max_concurrent_jobs = '2',
   $packages            = $bareos::params::bareos_client_packages,
-  $services            = $bareos::params::bareos_client_services,
+  $service             = $bareos::params::bareos_client_service,
   $conf_dir            = $bareos::params::conf_dir,
   $director            = $bareos::params::director,
   $storage             = $bareos::params::storage,
@@ -26,16 +26,27 @@ class bareos::client (
   $default_pool_full   = undef,
   $default_pool_inc    = undef,
   $default_pool_diff   = undef,
+  $include_repo        = true,
+  $install             = true,
 ) inherits bareos::params {
 
   include bareos::common
   include bareos::ssl
 
-  package { $packages:
-    ensure => present,
+  if $include_repo {
+    include '::bareos::repo'
   }
 
-  service { $services:
+  if $install {
+    package { 'bareos-client':
+      name   => $packages,
+      ensure => present,
+      tag    => 'bareos',
+    }
+  }
+
+  service { 'bareos-client':
+    name      => $service,
     ensure    => running,
     enable    => true,
     subscribe => File[$bareos::ssl::ssl_files],
@@ -48,7 +59,7 @@ class bareos::client (
     mode      => '0640',
     show_diff => false,
     require   => Package[$bareos::params::bareos_client_packages],
-    notify    => Service[$bareos::params::bareos_client_services],
+    notify    => Service['bareos-client'],
   }
 
   concat::fragment { 'bareos-client-header':

@@ -21,10 +21,11 @@ class bareos::director (
   $db_pw               = 'notverysecret',
   $db_name             = $bareos::params::bareos_user,
   $db_type             = $bareos::params::db_type,
+  $db_address          = '127.0.0.1',
   $password            = 'secret',
   $max_concurrent_jobs = '20',
   $packages            = $bareos::params::bareos_director_packages,
-  $services            = $bareos::params::bareos_director_services,
+  $service             = $bareos::params::bareos_director_service,
   $homedir             = $bareos::params::homedir,
   $rundir              = $bareos::params::rundir,
   $conf_dir            = $bareos::params::conf_dir,
@@ -34,6 +35,8 @@ class bareos::director (
   $group               = $bareos::params::bareos_group,
   $job_tag             = $bareos::params::job_tag,
   $messages,
+  $include_repo        = true,
+  $install             = true,
 ) inherits bareos::params {
 
   include bareos::common
@@ -42,15 +45,22 @@ class bareos::director (
   include bareos::director::defaults
   include bareos::virtual
 
-  case $db_type {
-    /^(pgsql|postgresql)$/: { include bareos::director::postgresql }
-    'none': { }
-    default:                { fail('No db_type set') }
+  if $include_repo {
+    include '::bareos::repo'
   }
 
-  realize(Package[$packages])
+  case $db_type {
+    'postgresql': { include bareos::director::postgresql }
+    'none':       { }
+    default:      { fail('No db_type set') }
+  }
 
-  service { $services:
+  if $install {
+    realize(Package[$packages])
+  }
+
+  service { 'bareos-director':
+    name      => $service,
     ensure    => running,
     enable    => true,
     subscribe => File[$bareos::ssl::ssl_files],
@@ -73,7 +83,7 @@ class bareos::director (
     owner  => 'root',
     group  => $group,
     mode   => '0640',
-    notify => Service[$services],
+    notify => Service['bareos-director'],
   }
 
   concat::fragment { 'bareos-director-header':

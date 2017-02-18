@@ -11,6 +11,7 @@ class bareos::virtual(
   # which is exactly the reason for having a virtual package resource.
   $packages = union($director_packages, $storage_packages)
   @package { $packages:
-    ensure => present
+    ensure => present,
+    tag    => 'bareos',
   }
 }
