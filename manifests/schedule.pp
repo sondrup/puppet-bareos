@@ -10,7 +10,8 @@ define bareos::schedule (
   validate_array($runs)
 
   concat::fragment { "bareos-schedule-${name}":
-    target  => "${conf_dir}/conf.d/schedule.conf",
+    target  => "${conf_dir}/bareos-dir.conf",
+    order   => "110-${name}",
     content => template('bareos/schedule.conf.erb'),
   }
 }

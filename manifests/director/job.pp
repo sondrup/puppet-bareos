@@ -4,9 +4,9 @@ define bareos::director::job (
 ) {
 
   concat::fragment { "bareos-director-job-${name}":
-    target  => "${conf_dir}/conf.d/job.conf",
+    target  => "${conf_dir}/bareos-dir.conf",
+    order   => "710-${name}",
     content => $content,
     tag     => "bareos-${::bareos::params::director}",
-    order   => $name,
   }
 }

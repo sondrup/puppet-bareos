@@ -21,6 +21,8 @@ class bareos::client (
   $autoprune           = $bareos::params::autoprune,
   $file_retention      = $bareos::params::file_retention,
   $job_retention       = $bareos::params::job_retention,
+  $bin                 = $bareos::params::bareos_client_bin,
+  $validate_config     = true,
   $client              = $::fqdn,
   $default_pool        = 'Default',
   $default_pool_full   = undef,
@@ -53,13 +55,19 @@ class bareos::client (
     require   => Package[$package],
   }
 
+  $validate_cmd = $validate_config ? {
+    false   => undef,
+    default => shell_join([$bin, '-t', '-c', '%']),
+  }
+
   concat { $client_config:
-    owner     => 'root',
-    group     => $group,
-    mode      => '0640',
-    show_diff => false,
-    require   => Package[$bareos::params::bareos_client_package],
-    notify    => Service['bareos-client'],
+    owner        => 'root',
+    group        => $group,
+    mode         => '0640',
+    show_diff    => false,
+    require      => Package['bareos-client'],
+    notify       => Service['bareos-client'],
+    validate_cmd => $validate_cmd,
   }
 
   concat::fragment { 'bareos-client-header':

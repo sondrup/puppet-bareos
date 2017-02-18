@@ -12,7 +12,8 @@ define bareos::fileset (
   include bareos::common
 
   @@concat::fragment { "bareos-fileset-${name}":
-    target  => "${conf_dir}/conf.d/fileset.conf",
+    target  => "${conf_dir}/bareos-dir.conf",
+    order   => "510-${name}",
     content => template('bareos/fileset.conf.erb'),
     tag     => "bareos-${::bareos::params::director}",
   }

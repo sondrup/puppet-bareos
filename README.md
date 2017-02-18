@@ -188,7 +188,7 @@ bareos::job { 'obsidian_logs':
 }
 ```
 
-This resource will create a new `Job` entry in `/etc/bareos/conf.d/job.conf` 
+This resource will create a new `Job` entry in `/etc/bareos/bareos-dir.conf`
 the next time the director applies it's catalog that will instruct the system
 to backup the files or directories at the paths specified in the `files` 
 parameter.

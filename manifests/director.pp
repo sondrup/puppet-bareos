@@ -34,6 +34,8 @@ class bareos::director (
   $storage             = $bareos::params::storage,
   $group               = $bareos::params::bareos_group,
   $job_tag             = $bareos::params::job_tag,
+  $bin                 = $bareos::params::bareos_director_bin,
+  $validate_config     = true,
   $messages,
   $include_repo        = true,
   $install             = true,
@@ -67,10 +69,6 @@ class bareos::director (
     require   => Package[$packages],
   }
 
-  file { "${conf_dir}/conf.d":
-    ensure => directory,
-  }
-
   file { "${conf_dir}/bconsole.conf":
     owner     => 'root',
     group     => $group,
@@ -79,23 +77,29 @@ class bareos::director (
     content   => template('bareos/bconsole.conf.erb');
   }
 
-  Concat {
-    owner  => 'root',
-    group  => $group,
-    mode   => '0640',
-    notify => Service['bareos-director'],
+  $validate_cmd = $validate_config ? {
+    false   => undef,
+    default => shell_join([$bin, '-t', '-c', '%']),
+  }
+
+  concat { "${conf_dir}/bareos-dir.conf":
+    owner          => 'root',
+    group          => $group,
+    mode           => '0640',
+    warn           => true,
+    show_diff      => false,
+    require        => Package[$packages],
+    notify         => Service['bareos-director'],
+    validate_cmd   => $validate_cmd,
+  }
+
+  Concat::Fragment {
+    target  => "${conf_dir}/bareos-dir.conf",
   }
 
   concat::fragment { 'bareos-director-header':
     order   => '00',
-    target  => "${conf_dir}/bareos-dir.conf",
     content => template('bareos/bareos-dir-header.erb')
-  }
-
-  concat::fragment { 'bareos-director-tail':
-    order   => '99999',
-    target  => "${conf_dir}/bareos-dir.conf",
-    content => template('bareos/bareos-dir-tail.erb')
   }
 
   create_resources(bareos::messages, $messages)
@@ -115,27 +119,21 @@ class bareos::director (
 
   Concat::Fragment <<| tag == "bareos-${director}" |>>
 
-  concat { "${conf_dir}/bareos-dir.conf":
-    show_diff => false,
+  $sub_confs = {
+    'Schedule' => '100',
+    'Storage'  => '200',
+    'Pools'    => '300',
+    'Client'   => '400',
+    'Fileset'  => '500',
+    'Jobdefs'  => '600',
+    'Job'      => '700',
   }
 
-  $sub_confs = [
-    "${conf_dir}/conf.d/schedule.conf",
-    "${conf_dir}/conf.d/pools.conf",
-    "${conf_dir}/conf.d/job.conf",
-    "${conf_dir}/conf.d/jobdefs.conf",
-    "${conf_dir}/conf.d/fileset.conf",
-  ]
-
-  $sub_confs_with_secrets = [
-    "${conf_dir}/conf.d/client.conf",
-    "${conf_dir}/conf.d/storage.conf",
-  ]
-
-  concat { $sub_confs: }
-
-  concat { $sub_confs_with_secrets:
-    show_diff => false,
+  $sub_confs.each |$config_group, $order| {
+    concat::fragment { "${config_group}-head":
+      order   => $order,
+      content => "\n\n# ${config_group} config\n\n",
+    }
   }
 
   bareos::fileset { 'Common':

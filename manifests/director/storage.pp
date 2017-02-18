@@ -29,7 +29,8 @@ define bareos::director::storage (
   include bareos::params
 
   concat::fragment { "bareos-director-storage-${name}":
-    target  => "${conf_dir}/conf.d/storage.conf",
+    target  => "${conf_dir}/bareos-dir.conf",
+    order   => "210-${name}",
     content => template('bareos/bareos-dir-storage.erb'),
   }
 }

@@ -1,7 +1,7 @@
 # Define: bareos::director::pool
 #
-# This define adds a pool to the bareos director configuration in the conf.d
-# method.  This resources is intended to be used from bareos::storage as a way
+# This define adds a pool to the bareos director configuration in the bareos-dir.conf
+# file. This resources is intended to be used from bareos::storage as a way
 # to export the pool resources to the director.
 #
 # Parameters:
@@ -47,7 +47,8 @@ define bareos::director::pool (
   include bareos::params
 
   concat::fragment { "bareos-director-pool-${name}":
-    target  => "${conf_dir}/conf.d/pools.conf",
-    content => template('bareos/bareos-dir-pool.erb');
+    target  => "${conf_dir}/bareos-dir.conf",
+    order   => "310-${name}",
+    content => template('bareos/bareos-dir-pool.erb'),
   }
 }

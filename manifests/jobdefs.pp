@@ -29,7 +29,8 @@ define bareos::jobdefs (
   $conf_dir = $bareos::params::conf_dir
 
   concat::fragment { "bareos-jobdefs-${name}":
-    target  => "${conf_dir}/conf.d/jobdefs.conf",
+    target  => "${conf_dir}/bareos-dir.conf",
+    order   => "610-${name}",
     content => template('bareos/jobdefs.conf.erb'),
   }
 }

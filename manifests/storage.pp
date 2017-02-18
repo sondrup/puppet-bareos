@@ -22,6 +22,8 @@ class bareos::storage (
   $director                = $bareos::params::director,
   $user                    = $bareos::params::bareos_user,
   $group                   = $bareos::params::bareos_group,
+  $bin                     = $bareos::params::bareos_storage_bin,
+  $validate_config         = true,
   $include_repo            = true,
   $install                 = true,
 ) inherits bareos::params {
@@ -47,7 +49,7 @@ class bareos::storage (
   }
 
   concat::fragment { 'bareos-storage-header':
-    order   => 00,
+    order   => '00',
     target  => "${conf_dir}/bareos-sd.conf",
     content => template('bareos/bareos-sd-header.erb'),
   }
@@ -68,12 +70,19 @@ class bareos::storage (
   # the storage daemon Adds an entry to ${conf_dir}/bareos-sd.conf
   Concat::Fragment <<| tag == "bareos-storage-dir-${director}" |>>
 
+  $validate_cmd = $validate_config ? {
+    false   => undef,
+    default => shell_join([$bin, '-t', '-c', '%']),
+  }
+
   concat { "${conf_dir}/bareos-sd.conf":
-    owner     => 'root',
-    group     => $group,
-    mode      => '0640',
-    show_diff => false,
-    notify    => Service['bareos-sd'],
+    owner        => 'root',
+    group        => $group,
+    mode         => '0640',
+    show_diff    => false,
+    require      => Package[$packages],
+    notify       => Service['bareos-sd'],
+    validate_cmd => $validate_cmd,
   }
 
   if $media_type == 'File' {

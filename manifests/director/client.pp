@@ -9,7 +9,8 @@ define bareos::director::client (
 ) {
 
   concat::fragment { "bareos-director-client-${client}":
-    target  => "${conf_dir}/conf.d/client.conf",
+    target  => "${conf_dir}/bareos-dir.conf",
+    order   => "410-${client}",
     content => template('bareos/bareos-dir-client.erb'),
   }
 }

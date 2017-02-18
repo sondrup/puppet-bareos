@@ -29,10 +29,13 @@ class bareos::params {
     'Ubuntu','Debian': {
       $bareos_director_packages = [ 'bareos-director', "bareos-database-${db_type}", 'bareos-bconsole' ]
       $bareos_director_service  = 'bareos-dir'
+      $bareos_director_bin      = '/usr/sbin/bareos-dir'
       $bareos_storage_packages  = [ 'bareos-storage' ]
       $bareos_storage_service   = 'bareos-sd'
+      $bareos_storage_bin       = '/usr/sbin/bareos-sd'
       $bareos_client_package    = 'bareos-client'
       $bareos_client_service    = 'bareos-fd'
+      $bareos_client_bin        = '/usr/sbin/bareos-fd'
       $conf_dir                 = '/etc/bareos'
       $bareos_dir               = '/etc/bareos/ssl'
       $client_config            = '/etc/bareos/bareos-fd.conf'
@@ -43,11 +46,14 @@ class bareos::params {
     }
     'RedHat','CentOS','Fedora','Scientific': {
       $bareos_director_packages = [ 'bareos-director', "bareos-director-${db_type}", 'bareos-console' ]
-      $bareos_storage_packages  = [ 'bareos-storage' ]
       $bareos_director_service  = 'bareos-dir'
+      $bareos_director_bin      = '/usr/sbin/bareos-dir'
+      $bareos_storage_packages  = [ 'bareos-storage' ]
       $bareos_storage_service   = 'bareos-sd'
+      $bareos_storage_bin       = '/usr/sbin/bareos-sd'
       $bareos_client_package    = 'bareos-client'
       $bareos_client_service    = 'bareos-fd'
+      $bareos_client_bin        = '/usr/sbin/bareos-fd'
       $conf_dir                 = '/etc/bareos'
       $bareos_dir               = '/etc/bareos/ssl'
       $client_config            = '/etc/bareos/bareos-fd.conf'
