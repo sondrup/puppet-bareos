@@ -11,7 +11,7 @@ class bareos::client (
   $listen_address      = $::ipaddress,
   $password            = 'secret',
   $max_concurrent_jobs = '2',
-  $packages            = $bareos::params::bareos_client_packages,
+  $package             = $bareos::params::bareos_client_package,
   $service             = $bareos::params::bareos_client_service,
   $conf_dir            = $bareos::params::conf_dir,
   $director            = $bareos::params::director,
@@ -39,7 +39,7 @@ class bareos::client (
 
   if $install {
     package { 'bareos-client':
-      name   => $packages,
+      name   => $package,
       ensure => present,
       tag    => 'bareos',
     }
@@ -50,7 +50,7 @@ class bareos::client (
     ensure    => running,
     enable    => true,
     subscribe => File[$bareos::ssl::ssl_files],
-    require   => Package[$packages],
+    require   => Package[$package],
   }
 
   concat { $client_config:
@@ -58,7 +58,7 @@ class bareos::client (
     group     => $group,
     mode      => '0640',
     show_diff => false,
-    require   => Package[$bareos::params::bareos_client_packages],
+    require   => Package[$bareos::params::bareos_client_package],
     notify    => Service['bareos-client'],
   }
 

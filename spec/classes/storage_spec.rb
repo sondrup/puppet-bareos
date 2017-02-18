@@ -6,9 +6,14 @@ describe 'bareos::storage' do
   context 'Debian' do
     let(:facts) {
       {
+        :osfamily        => 'Debian',
         :operatingsystem => 'Debian',
-        :concat_basedir => '/dne',
-        :ipaddress => '10.0.0.1'
+        :concat_basedir  => '/dne',
+        :ipaddress       => '10.0.0.1',
+        # puppetlabs-apt dependent facts
+        :lsbdistid       => 'Debian',
+        :lsbdistcodename => 'jessie',
+        :puppetversion   => Puppet.version,
       }
     }
     it { should contain_class('bareos::storage') }
@@ -25,27 +30,5 @@ describe 'bareos::storage' do
       }
     }
     it { should contain_class('bareos::storage') }
-    context 'New packages' do
-      it { should contain_package('bareos-storage').with(
-          'ensure' => 'present',
-        )
-      }
-      it { should_not contain_package('bareos-storage-common') }
-    end
-    context 'Old packages' do
-      let(:facts) do
-        super().merge(
-          {
-            :operatingsystemrelease => '6.0',
-            :operatingsystemmajrelease => '6',
-          }
-        )
-      end
-      it { should contain_package('bareos-storage-common').with(
-          'ensure' => 'present',
-        )
-      }
-      it { should_not contain_package('bareos-storage') }
-    end
   end
 end

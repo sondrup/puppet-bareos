@@ -3,8 +3,13 @@ class bareos::repo (
   Boolean $manage_repo = true,
 ) {
   if $manage_repo {
-    class { '::bareos::repo::debian':
-      version => $version,
+    case $facts['operatingsystem'] {
+      'Debian': {
+        class { '::bareos::repo::debian':
+          version => $version,
+        }
+      }
+      default: { }
     }
   }
 }

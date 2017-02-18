@@ -31,7 +31,7 @@ class bareos::params {
       $bareos_director_service  = 'bareos-dir'
       $bareos_storage_packages  = [ 'bareos-storage' ]
       $bareos_storage_service   = 'bareos-sd'
-      $bareos_client_packages   = 'bareos-client'
+      $bareos_client_package    = 'bareos-client'
       $bareos_client_service    = 'bareos-fd'
       $conf_dir                 = '/etc/bareos'
       $bareos_dir               = '/etc/bareos/ssl'
@@ -42,16 +42,11 @@ class bareos::params {
       $bareos_group             = $bareos_user
     }
     'RedHat','CentOS','Fedora','Scientific': {
-      if 0 + $facts['operatingsystemmajrelease'] < 7 or ($facts['operatingsystem'] == 'Fedora' and 0 + $facts['operatingsystemmajrelease'] < 17) {
-        $bareos_director_packages = [ 'bareos-director-common', "bareos-director-${db_type}", 'bareos-console' ]
-        $bareos_storage_packages  = [ 'bareos-storage-common', "bareos-storage-${db_type}" ]
-      } else {
-        $bareos_director_packages = [ 'bareos-director', 'bareos-console' ]
-        $bareos_storage_packages  = [ 'bareos-storage' ]
-      }
+      $bareos_director_packages = [ 'bareos-director', "bareos-director-${db_type}", 'bareos-console' ]
+      $bareos_storage_packages  = [ 'bareos-storage' ]
       $bareos_director_service  = 'bareos-dir'
       $bareos_storage_service   = 'bareos-sd'
-      $bareos_client_packages   = 'bareos-client'
+      $bareos_client_package    = 'bareos-client'
       $bareos_client_service    = 'bareos-fd'
       $conf_dir                 = '/etc/bareos'
       $bareos_dir               = '/etc/bareos/ssl'

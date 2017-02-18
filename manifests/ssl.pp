@@ -7,7 +7,7 @@ class bareos::ssl (
   $certfile   = $bareos::params::certfile,
   $keyfile    = $bareos::params::keyfile,
   $cafile     = $bareos::params::cafile,
-  $packages   = $bareos::params::bareos_client_packages,
+  $package    = $bareos::params::bareos_client_package,
   $user       = $bareos::params::bareos_user,
   $conf_user  = $bareos::params::bareos_user,
   $conf_group = $bareos::params::bareos_group,
@@ -23,7 +23,7 @@ class bareos::ssl (
     owner   => $user,
     group   => '0',
     mode    => '0640',
-    require => Package[$packages],
+    require => Package[$package],
   }
 
   file { $conf_dir:

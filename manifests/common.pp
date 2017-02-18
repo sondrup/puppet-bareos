@@ -9,7 +9,7 @@
 class bareos::common (
   $homedir      = $bareos::params::homedir,
   $homedir_mode = '0770',
-  $packages     = $bareos::params::bareos_client_packages,
+  $package      = $bareos::params::bareos_client_package,
   $user         = $bareos::params::bareos_user,
   $group        = $bareos::params::bareos_group,
 ) inherits bareos::params {
@@ -22,6 +22,6 @@ class bareos::common (
     owner   => $user,
     group   => $group,
     mode    => $homedir_mode,
-    require => Package[$packages],
+    require => Package[$package],
   }
 }
