@@ -26,11 +26,10 @@ class bareos::repo::debian (
 
   Apt::Key {
     id => '0143857D9CE8C2D182FE2631F93C028C093BFBA2',
-    source => "${location}/Release.key",
+    source => "${_location}/Release.key",
   }
 
   apt::key { 'bareos':
-    before => Apt::Setting['list-bareos'],
     *      => $key,
   }
 
