@@ -1,5 +1,6 @@
 require 'puppetlabs_spec_helper/rake_tasks'
 require 'puppet/version'
+require 'metadata_json_lint'
 require 'puppet/vendor/semantic/lib/semantic' unless Puppet.version.to_f < 3.6
 require 'puppet-lint/tasks/puppet-lint'
 require 'puppet-syntax/tasks/puppet-syntax'
@@ -43,8 +44,9 @@ task :contributors do
   system("git log --format='%aN' | sort -u > CONTRIBUTORS")
 end
 
-task :metadata do
-  sh "metadata-json-lint metadata.json"
+desc 'Run metadata-json-lint'
+task :metadata_lint do
+  MetadataJsonLint.parse('metadata.json') if File.exist?('metadata.json')
 end
 
 desc "Run syntax, lint, and spec tests."
@@ -52,5 +54,5 @@ task :test => [
   :syntax,
   :lint,
   :spec,
-  :metadata,
+  :metadata_lint,
 ]
