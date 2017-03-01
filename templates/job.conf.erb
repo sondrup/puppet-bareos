@@ -39,11 +39,22 @@ Job {
 <% @runscript.each do |script| -%>
     RunScript {
       RunsWhen = <%= script.fetch('runs_when') %>
-      FailJobOnError = <%= (script['fail_job_on_error'] != false) ? 'yes' : 'no' %>
-      RunsOnSuccess = <%= (script['runs_on_success'] != false) ? 'yes' : 'no' %>
-      RunsOnFailure = <%= script['runs_on_failure'] ? 'yes' : 'no' %>
-      RunsOnClient = <%= script['runs_on_client'] ? 'yes' : 'no' %>
+<% if script['runs_on_success'] -%>
+      RunsOnSuccess = <%= script.fetch('runs_on_success') %>
+<% end -%>
+<% if script['runs_on_failure'] -%>
+      RunsOnFailure = <%= script.fetch('runs_on_failure') %>
+<% end -%>
+<% if script['runs_on_client'] -%>
+      RunsOnClient = <%= script.fetch('runs_on_client') %>
+<% end -%>
+<% if script['fail_job_on_error'] -%>
+      FailJobOnError = <%= script.fetch('fail_job_on_error') %>
+<% end -%>
       Command = <%= script.fetch('command').inspect %>
+<% if script['console'] -%>
+      Console = <%= script.fetch('console').inspect %>
+<% end -%>
     }
 <% end -%>
     Accurate         = <%= @accurate %>
