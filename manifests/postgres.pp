@@ -15,8 +15,8 @@
 #
 define bareos::postgres {
 
-  include bareos::params
-  include bareos::postgres::resources
+  include ::bareos::params
+  include ::bareos::postgres::resources
 
   $homedir = $bareos::params::homedir
 

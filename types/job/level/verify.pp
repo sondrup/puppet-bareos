@@ -3,5 +3,5 @@ type Bareos::Job::Level::Verify = Enum[
   'InitCatalog',
   'Catalog',
   'VolumeToCatalog',
-  'DiskToCatalog'
+  'DiskToCatalog',
 ]

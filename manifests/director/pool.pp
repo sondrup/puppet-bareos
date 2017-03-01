@@ -44,7 +44,7 @@ define bareos::director::pool (
   $next_pool      = undef,
 ) {
 
-  include bareos::params
+  include ::bareos::params
 
   concat::fragment { "bareos-director-pool-${name}":
     target  => "${conf_dir}/bareos-dir.conf",

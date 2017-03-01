@@ -8,5 +8,5 @@ type Bareos::Job::Selectiontype = Enum[
   'SQLQuery',
   'PoolOccupancy',
   'PoolTime',
-  'PoolUncopiedJobs'
+  'PoolUncopiedJobs',
 ]

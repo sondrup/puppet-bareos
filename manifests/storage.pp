@@ -28,9 +28,9 @@ class bareos::storage (
   Boolean $install                 = true,
 ) inherits bareos::params {
 
-  include bareos::common
-  include bareos::ssl
-  include bareos::virtual
+  include ::bareos::common
+  include ::bareos::ssl
+  include ::bareos::virtual
 
   if $include_repo {
     include '::bareos::repo'
@@ -41,8 +41,8 @@ class bareos::storage (
   }
 
   service { 'bareos-sd':
-    name      => $service,
     ensure    => running,
+    name      => $service,
     enable    => true,
     subscribe => File[$bareos::ssl::ssl_files],
     require   => Package[$packages],

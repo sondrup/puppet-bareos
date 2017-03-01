@@ -15,7 +15,7 @@ class bareos::director::postgresql(
   String $user               = $bareos::params::bareos_user,
 ) inherits bareos::params {
 
-  require postgresql::server
+  require ::postgresql::server
 
   postgresql::server::db { $db_name:
     user     => $db_user,
@@ -32,6 +32,6 @@ class bareos::director::postgresql(
     notify      => Service['bareos-director'],
     require     => [
       Postgresql::Server::Db[$db_name],
-    ]
+    ],
   }
 }

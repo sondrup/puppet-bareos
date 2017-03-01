@@ -3,5 +3,5 @@ type Bareos::Job::Level::Backup = Enum[
   'Full',
   'Incremental',
   'Diﬀerential',
-  'VirtualFull'
+  'VirtualFull',
 ]

@@ -41,18 +41,18 @@ class bareos::director (
   Boolean $install                = true,
 ) inherits bareos::params {
 
-  include bareos::common
-  include bareos::client
-  include bareos::ssl
-  include bareos::director::defaults
-  include bareos::virtual
+  include ::bareos::common
+  include ::bareos::client
+  include ::bareos::ssl
+  include ::bareos::director::defaults
+  include ::bareos::virtual
 
   if $include_repo {
     include '::bareos::repo'
   }
 
   case $db_type {
-    'postgresql': { include bareos::director::postgresql }
+    'postgresql': { include ::bareos::director::postgresql }
     'none':       { }
     default:      { fail('No db_type set') }
   }
@@ -62,8 +62,8 @@ class bareos::director (
   }
 
   service { 'bareos-director':
-    name      => $service,
     ensure    => running,
+    name      => $service,
     enable    => true,
     subscribe => File[$bareos::ssl::ssl_files],
     require   => Package[$packages],
@@ -83,14 +83,14 @@ class bareos::director (
   }
 
   concat { "${conf_dir}/bareos-dir.conf":
-    owner          => 'root',
-    group          => $group,
-    mode           => '0640',
-    warn           => true,
-    show_diff      => false,
-    require        => Package[$packages],
-    notify         => Service['bareos-director'],
-    validate_cmd   => $validate_cmd,
+    owner        => 'root',
+    group        => $group,
+    mode         => '0640',
+    warn         => true,
+    show_diff    => false,
+    require      => Package[$packages],
+    notify       => Service['bareos-director'],
+    validate_cmd => $validate_cmd,
   }
 
   Concat::Fragment {
@@ -99,7 +99,7 @@ class bareos::director (
 
   concat::fragment { 'bareos-director-header':
     order   => '00',
-    content => template('bareos/bareos-dir-header.erb')
+    content => template('bareos/bareos-dir-header.erb'),
   }
 
   create_resources(bareos::messages, $messages)

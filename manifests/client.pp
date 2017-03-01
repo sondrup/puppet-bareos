@@ -32,8 +32,8 @@ class bareos::client (
   Boolean $install                    = true,
 ) inherits bareos::params {
 
-  include bareos::common
-  include bareos::ssl
+  include ::bareos::common
+  include ::bareos::ssl
 
   if $include_repo {
     include '::bareos::repo'
@@ -41,15 +41,15 @@ class bareos::client (
 
   if $install {
     package { 'bareos-client':
-      name   => $package,
       ensure => present,
+      name   => $package,
       tag    => 'bareos',
     }
   }
 
   service { 'bareos-client':
-    name      => $service,
     ensure    => running,
+    name      => $service,
     enable    => true,
     subscribe => File[$bareos::ssl::ssl_files],
     require   => Package[$package],

@@ -70,8 +70,8 @@ define bareos::job (
   Optional[String] $selection_pattern                  = undef,
 ) {
 
-  include bareos::common
-  include bareos::params
+  include ::bareos::common
+  include ::bareos::params
   $conf_dir = $bareos::params::conf_dir
 
   # if the fileset is not defined, we fall back to one called "Common"
@@ -82,7 +82,7 @@ define bareos::job (
     $fileset_real = $name
     bareos::fileset { $name:
       files    => $files,
-      excludes => $excludes
+      excludes => $excludes,
       }
   } else {
     $fileset_real = 'Common'

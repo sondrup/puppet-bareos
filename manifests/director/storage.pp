@@ -26,7 +26,7 @@ define bareos::director::storage (
   Stdlib::Absolutepath $conf_dir = $bareos::params::conf_dir, # Overridden at realize
 ) {
 
-  include bareos::params
+  include ::bareos::params
 
   concat::fragment { "bareos-director-storage-${name}":
     target  => "${conf_dir}/bareos-dir.conf",

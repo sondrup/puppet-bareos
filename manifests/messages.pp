@@ -16,8 +16,8 @@ define bareos::messages (
   Optional[String] $operatorcmd   = undef,
 ) {
 
-  include bareos::common
-  include bareos::params
+  include ::bareos::common
+  include ::bareos::params
 
   concat::fragment { "bareos-messages-${daemon}-${name}":
     target  => "${bareos::params::conf_dir}/bareos-${daemon}.conf",

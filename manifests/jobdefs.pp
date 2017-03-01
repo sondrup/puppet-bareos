@@ -23,7 +23,7 @@ define bareos::jobdefs (
   Integer[1] $reschedule_times      = 10,
 ) {
 
-  include bareos::params
+  include ::bareos::params
   $conf_dir = $bareos::params::conf_dir
 
   concat::fragment { "bareos-jobdefs-${name}":

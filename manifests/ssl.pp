@@ -16,7 +16,7 @@ class bareos::ssl (
   $ssl_files = [
     $certfile,
     $keyfile,
-    $cafile
+    $cafile,
   ]
 
   File {

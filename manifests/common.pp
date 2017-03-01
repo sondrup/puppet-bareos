@@ -14,8 +14,8 @@ class bareos::common (
   String $group                 = $bareos::params::bareos_group,
 ) inherits bareos::params {
 
-  include bareos::ssl
-  include bareos::client
+  include ::bareos::ssl
+  include ::bareos::client
 
   file { $homedir:
     ensure  => directory,

@@ -9,7 +9,7 @@ define bareos::fileset (
   Stdlib::Absolutepath $conf_dir           = $bareos::params::conf_dir, # Overridden at realize
 ) {
 
-  include bareos::common
+  include ::bareos::common
 
   @@concat::fragment { "bareos-fileset-${name}":
     target  => "${conf_dir}/bareos-dir.conf",

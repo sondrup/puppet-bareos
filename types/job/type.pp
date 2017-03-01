@@ -5,5 +5,5 @@ type Bareos::Job::Type = Enum[
   'Admin',
   'Migrate',
   'Copy',
-  'Consolidate'
+  'Consolidate',
 ]
