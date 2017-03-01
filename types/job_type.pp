@@ -1,4 +1,4 @@
-type Bareos::Job::Type = Enum[
+type Bareos::Job_type = Enum[
   'Backup',
   'Restore',
   'Verify',

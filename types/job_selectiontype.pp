@@ -1,5 +1,5 @@
 # Bareos Job Selection Type
-type Bareos::Job::Selectiontype = Enum[
+type Bareos::Job_selectiontype = Enum[
   'SmallestVolume',
   'OldestVolume',
   'Client',
