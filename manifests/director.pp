@@ -15,30 +15,30 @@
 #   }
 #
 class bareos::director (
-  $port                = '9101',
-  $listen_address      = $::ipaddress,
-  $db_user             = $bareos::params::bareos_user,
-  $db_pw               = 'notverysecret',
-  $db_name             = $bareos::params::bareos_user,
-  $db_type             = $bareos::params::db_type,
-  $db_address          = '127.0.0.1',
-  $password            = 'secret',
-  $max_concurrent_jobs = '20',
-  $packages            = $bareos::params::bareos_director_packages,
-  $service             = $bareos::params::bareos_director_service,
-  $homedir             = $bareos::params::homedir,
-  $rundir              = $bareos::params::rundir,
-  $conf_dir            = $bareos::params::conf_dir,
-  $director            = $::fqdn, # director here is not params::director
-  $director_address    = $bareos::params::director_address,
-  $storage             = $bareos::params::storage,
-  $group               = $bareos::params::bareos_group,
-  $job_tag             = $bareos::params::job_tag,
-  $bin                 = $bareos::params::bareos_director_bin,
-  $validate_config     = true,
-  $messages,
-  $include_repo        = true,
-  $install             = true,
+  Integer[1] $port                = 9101,
+  String $listen_address          = $::ipaddress,
+  String $db_user                 = $bareos::params::bareos_user,
+  String $db_pw                   = 'notverysecret',
+  String $db_name                 = $bareos::params::bareos_user,
+  Bareos::Dbdriver $db_type       = $bareos::params::db_type,
+  String $db_address              = '127.0.0.1',
+  String $password                = 'secret',
+  Integer[1] $max_concurrent_jobs = 20,
+  Array[String] $packages         = $bareos::params::bareos_director_packages,
+  String $service                 = $bareos::params::bareos_director_service,
+  Stdlib::Absolutepath $homedir   = $bareos::params::homedir,
+  Stdlib::Absolutepath $rundir    = $bareos::params::rundir,
+  Stdlib::Absolutepath $conf_dir  = $bareos::params::conf_dir,
+  String $director                = $::fqdn, # director here is not params::director
+  String $director_address        = $bareos::params::director_address,
+  String $storage                 = $bareos::params::storage,
+  String $group                   = $bareos::params::bareos_group,
+  String $job_tag                 = $bareos::params::job_tag,
+  Stdlib::Absolutepath $bin       = $bareos::params::bareos_director_bin,
+  Boolean $validate_config        = true,
+  Hash $messages,
+  Boolean $include_repo           = true,
+  Boolean $install                = true,
 ) inherits bareos::params {
 
   include bareos::common
@@ -143,7 +143,7 @@ class bareos::director (
   bareos::job { 'RestoreFiles':
     jobtype  => 'Restore',
     fileset  => false,
-    jobdef   => false,
+    jobdef   => undef,
     messages => 'Standard',
   }
 }

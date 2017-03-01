@@ -18,12 +18,12 @@
 # *  maxconcurjob - Bareos director configuration for Storage option 'Media Type'
 #
 define bareos::director::storage (
-  $port          = '9103',
-  $password      = 'secret',
-  $device_name   = "${::fqdn}-device",
-  $media_type    = 'File',
-  $maxconcurjobs = '1',
-  $conf_dir      = $bareos::params::conf_dir, # Overridden at realize
+  Integer[1] $port               = 9103,
+  String $password               = 'secret',
+  String $device_name            = "${::fqdn}-device",
+  String $media_type             = 'File',
+  Integer[1] $maxconcurjobs      = 1,
+  Stdlib::Absolutepath $conf_dir = $bareos::params::conf_dir, # Overridden at realize
 ) {
 
   include bareos::params

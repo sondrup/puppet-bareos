@@ -1,6 +1,6 @@
 define bareos::director::job (
-  $content,
-  $conf_dir = $bareos::params::conf_dir, # Overridden at realize
+  String $content,
+  Stdlib::Absolutepath $conf_dir = $bareos::params::conf_dir, # Overridden at realize
 ) {
 
   concat::fragment { "bareos-director-job-${name}":

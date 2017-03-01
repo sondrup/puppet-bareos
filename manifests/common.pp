@@ -7,11 +7,11 @@
 # manifest.
 #
 class bareos::common (
-  $homedir      = $bareos::params::homedir,
-  $homedir_mode = '0770',
-  $package      = $bareos::params::bareos_client_package,
-  $user         = $bareos::params::bareos_user,
-  $group        = $bareos::params::bareos_group,
+  Stdlib::Absolutepath $homedir = $bareos::params::homedir,
+  String $homedir_mode          = '0770',
+  String $package               = $bareos::params::bareos_client_package,
+  String $user                  = $bareos::params::bareos_user,
+  String $group                 = $bareos::params::bareos_group,
 ) inherits bareos::params {
 
   include bareos::ssl

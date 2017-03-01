@@ -3,10 +3,10 @@
 # A grouping of files to backup.
 #
 define bareos::fileset (
-  $files,
-  $excludes                     = '',
-  Hash[String, String] $options = {'signature' => 'SHA1', 'compression' => 'GZIP9'},
-  $conf_dir                     = $bareos::params::conf_dir, # Overridden at realize
+  Variant[Array[String], String] $files,
+  Variant[Array[String], String] $excludes = '',
+  Hash[String, String] $options            = {'signature' => 'SHA1', 'compression' => 'GZIP9'},
+  Stdlib::Absolutepath $conf_dir           = $bareos::params::conf_dir, # Overridden at realize
 ) {
 
   include bareos::common

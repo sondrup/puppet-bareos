@@ -11,19 +11,17 @@
 # Sample Usage:
 #
 define bareos::jobdefs (
-  $jobtype             = 'Backup',
-  $sched               = 'Default',
-  $messages            = 'Standard',
-  $priority            = '10',
-  $pool                = 'Default',
-  $level               = undef,
-  $accurate            = 'no',
-  $reschedule_on_error = false,
-  $reschedule_interval = '1 hour',
-  $reschedule_times    = '10',
+  String $sched                     = 'Default',
+  String $messages                  = 'Standard',
+  Integer[1] $priority              = 10,
+  String $pool                      = 'Default',
+  Bareos::Job::Level $level         = undef,
+  Bareos::Job::Type $jobtype        = 'Backup',
+  Bareos::Yesno $accurate           = 'no',
+  Boolean $reschedule_on_error      = false,
+  Bareos::Time $reschedule_interval = '1 hour',
+  Integer[1] $reschedule_times      = 10,
 ) {
-
-  validate_re($jobtype, ['^Backup', '^Restore', '^Admin', '^Verify', '^Copy', '^Migrate'])
 
   include bareos::params
   $conf_dir = $bareos::params::conf_dir

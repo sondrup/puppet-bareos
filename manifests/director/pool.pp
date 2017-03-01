@@ -35,12 +35,12 @@ define bareos::director::pool (
   $maxvols        = undef,
   $label          = undef,
   $voluseduration = undef,
-  $storage        = $bareos::director::storage,
+  String $storage        = $bareos::director::storage,
   $pooltype       = 'Backup',
   $recycle        = 'Yes',
   $autoprune      = 'Yes',
   $purgeaction    = 'Truncate',
-  $conf_dir       = $bareos::params::conf_dir, # Overridden at realize
+  Stdlib::Absolutepath $conf_dir       = $bareos::params::conf_dir, # Overridden at realize
   $next_pool      = undef,
 ) {
 

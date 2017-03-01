@@ -3,19 +3,18 @@
 # Create a Messages resource on the $daemon (director, storage or file).
 #
 define bareos::messages (
-  $mname       = 'Standard',
-  $daemon      = 'dir',
-  $director    = undef,
-  $append      = undef,
-  $catalog     = undef,
-  $syslog      = undef,
-  $console     = undef,
-  $mail        = undef,
-  $operator    = undef,
-  $mailcmd     = undef,
-  $operatorcmd = undef,
+  String $mname                   = 'Standard',
+  Enum['dir', 'sd', 'fd'] $daemon = 'dir',
+  Optional[String] $director      = undef,
+  Optional[String] $append        = undef,
+  Optional[String] $catalog       = undef,
+  Optional[String] $syslog        = undef,
+  Optional[String] $console       = undef,
+  Optional[String] $mail          = undef,
+  Optional[String] $operator      = undef,
+  Optional[String] $mailcmd       = undef,
+  Optional[String] $operatorcmd   = undef,
 ) {
-  validate_re($daemon, ['^dir', '^sd', '^fd'])
 
   include bareos::common
   include bareos::params

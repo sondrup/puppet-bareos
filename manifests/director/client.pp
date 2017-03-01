@@ -1,11 +1,11 @@
 define bareos::director::client (
-  $port           = '9102',
-  $client         = $::fqdn,
-  $password       = 'secret',
-  $conf_dir       = $bareos::params::conf_dir, # Overridden at realize
-  $file_retention = $bareos::params::file_retention,
-  $job_retention  = $bareos::params::job_retention,
-  $autoprune      = $bareos::params::autoprune,
+  Integer[1] $port               = 9102,
+  String $client                 = $::fqdn,
+  String $password               = 'secret',
+  Stdlib::Absolutepath $conf_dir = $bareos::params::conf_dir, # Overridden at realize
+  Bareos::Time $file_retention   = $bareos::params::file_retention,
+  Bareos::Time $job_retention    = $bareos::params::job_retention,
+  Bareos::Yesno $autoprune       = $bareos::params::autoprune,
 ) {
 
   concat::fragment { "bareos-director-client-${client}":

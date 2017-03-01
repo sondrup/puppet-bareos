@@ -2,15 +2,15 @@
 #
 # Manage the SSL deployment for bareos components, Director, Storage, and File.
 class bareos::ssl (
-  $ssl_dir    = $bareos::params::ssl_dir,
-  $conf_dir   = $bareos::params::conf_dir,
-  $certfile   = $bareos::params::certfile,
-  $keyfile    = $bareos::params::keyfile,
-  $cafile     = $bareos::params::cafile,
-  $package    = $bareos::params::bareos_client_package,
-  $user       = $bareos::params::bareos_user,
-  $conf_user  = $bareos::params::bareos_user,
-  $conf_group = $bareos::params::bareos_group,
+  Stdlib::Absolutepath $ssl_dir  = $bareos::params::ssl_dir,
+  Stdlib::Absolutepath $conf_dir = $bareos::params::conf_dir,
+  Stdlib::Absolutepath $certfile = $bareos::params::certfile,
+  Stdlib::Absolutepath $keyfile  = $bareos::params::keyfile,
+  Stdlib::Absolutepath $cafile   = $bareos::params::cafile,
+  String $package                = $bareos::params::bareos_client_package,
+  String $user                   = $bareos::params::bareos_user,
+  String $conf_user              = $bareos::params::bareos_user,
+  String $conf_group             = $bareos::params::bareos_group,
 ) inherits bareos::params {
 
   $ssl_files = [
