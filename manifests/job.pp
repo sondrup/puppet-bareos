@@ -54,7 +54,7 @@ define bareos::job (
   Boolean $pool_inc                                   = $bareos::client::default_pool_inc,
   Boolean $pool_diff                                  = $bareos::client::default_pool_diff,
   Optional[String] $storage                           = undef,
-  Optional[String] $jobdef                            = 'Default',
+  Optional[String] $jobdef                            = $jobtype ? { 'backup' => 'Default', default  => undef, },
   Array[Bareos::Runscript] $runscript                 = [],
   Optional[Bareos::Job_level] $level                  = undef,
   Bareos::Yesno $accurate                             = 'no',
