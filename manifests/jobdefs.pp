@@ -11,20 +11,20 @@
 # Sample Usage:
 #
 define bareos::jobdefs (
+  Bareos::Job_type $jobtype         = 'Backup',
   String $sched                     = 'Default',
   String $messages                  = 'Standard',
   Integer[1] $priority              = 10,
   String $pool                      = 'Default',
   Bareos::Job_level $level          = undef,
-  Bareos::Job_type $jobtype         = 'Backup',
   Bareos::Yesno $accurate           = 'no',
   Boolean $reschedule_on_error      = false,
   Bareos::Time $reschedule_interval = '1 hour',
   Integer[1] $reschedule_times      = 10,
 ) {
 
-  include ::bareos::params
-  $conf_dir = $bareos::params::conf_dir
+  include ::bareos
+  $conf_dir = $bareos::conf_dir
 
   concat::fragment { "bareos-jobdefs-${name}":
     target  => "${conf_dir}/bareos-dir.conf",

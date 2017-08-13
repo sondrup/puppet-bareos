@@ -1,4 +1,4 @@
-<% if scope.lookupvar('bareos::params::ssl') -%>
+<% if scope.lookupvar('bareos::use_ssl') -%>
     TLS Certificate         = <%= @conf_dir %>/ssl/<%= @clientcert %>_cert.pem
     TLS Key                 = <%= @conf_dir %>/ssl/<%= @clientcert %>_key.pem
 <% end -%>

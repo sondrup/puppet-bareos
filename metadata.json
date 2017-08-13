@@ -1,6 +1,6 @@
 {
-  "name": "kim-bareos",
-  "version": "0.1.0",
+  "name": "sondrup-bareos",
+  "version": "5.0.0",
   "author": "kim-sondrup",
   "summary": "A Bareos module based on a Bacula module stolen from Zach Leslie",
   "license": "Apache-2.0",

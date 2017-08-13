@@ -4,21 +4,16 @@
 # file. This resources is intended to be used from bareos::storage as a way
 # to export the pool resources to the director.
 #
-# Parameters:
-# *  pooltype    - Bareos pool configuration option "Pool Type"
-# *  recycle     - Bareos pool configuration option "Recycle"
-# *  autoprune   - Bareos pool configuration option "AutoPrune"
-# *  volret      - Bareos pool configuration option "Volume Retention"
-# *  maxvoljobs  - Bareos pool configuration option "Maximum Volume Jobs"
-# *  maxvolbytes - Bareos pool configuration option "Maximum Volume Bytes"
-# *  purgeaction - Bareos pool configuration option "Action On Purge"
-# *  label       - Bareos pool configuration option "Label Format"
+# @param pooltype    - Bareos pool configuration option "Pool Type"
+# @param recycle     - Bareos pool configuration option "Recycle"
+# @param autoprune   - Bareos pool configuration option "AutoPrune"
+# @param volret      - Bareos pool configuration option "Volume Retention"
+# @param maxvoljobs  - Bareos pool configuration option "Maximum Volume Jobs"
+# @param maxvolbytes - Bareos pool configuration option "Maximum Volume Bytes"
+# @param purgeaction - Bareos pool configuration option "Action On Purge"
+# @param label       - Bareos pool configuration option "Label Format"
 #
-# Actions:
-#
-# Requires:
-#
-# Sample Usage:
+# @example
 # bareos::director::pool {
 #   "PuppetLabsPool-Full":
 #     volret      => "2 months",
@@ -29,22 +24,20 @@
 # }
 #
 define bareos::director::pool (
-  $volret         = undef,
-  $maxvoljobs     = undef,
-  $maxvolbytes    = undef,
-  $maxvols        = undef,
-  $label          = undef,
-  $voluseduration = undef,
-  String $storage        = $bareos::director::storage,
-  $pooltype       = 'Backup',
-  $recycle        = 'Yes',
-  $autoprune      = 'Yes',
-  $purgeaction    = 'Truncate',
-  Stdlib::Absolutepath $conf_dir       = $bareos::params::conf_dir, # Overridden at realize
-  $next_pool      = undef,
+  $volret                        = undef,
+  $maxvoljobs                    = undef,
+  $maxvolbytes                   = undef,
+  $maxvols                       = undef,
+  $label                         = undef,
+  $voluseduration                = undef,
+  String $storage                = $bareos::director::storage,
+  $pooltype                      = 'Backup',
+  $recycle                       = 'Yes',
+  $autoprune                     = 'Yes',
+  $purgeaction                   = 'Truncate',
+  $next_pool                     = undef,
+  Stdlib::Absolutepath $conf_dir = $bareos::conf_dir,
 ) {
-
-  include ::bareos::params
 
   concat::fragment { "bareos-director-pool-${name}":
     target  => "${conf_dir}/bareos-dir.conf",

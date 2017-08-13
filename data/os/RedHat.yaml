@@ -1,3 +1,20 @@
 ---
 bareos::director::postgresql::make_bareos_tables: '/usr/libexec/bareos/make_bareos_tables.postgresql'
+bareos::director::db_type: 'postgresql'
 
+bareos::storage::packages: [ 'bareos-storage' ]
+bareos::director::packages:
+  - 'bareos-director'
+  - 'bareos-database-<%= $db_type %>'
+  - 'bareos-bconsole'
+bareos::client::package: 'bareos-client'
+
+bareos::director::services: 'bareos-dir'
+bareos::storage::services: 'bareos-sd'
+bareos::conf_dir: '/etc/bareos'
+bareos_dir: '/etc/bareos/ssl'
+bareos::client::config_file: '/etc/bareos/bareos-fd.conf'
+bareos::homedir: '/var/spool/bareos'
+bareos::rundir: '/var/run'
+bareos::bareos_user: 'bareos'
+bareos::bareos_group: 'bareos'

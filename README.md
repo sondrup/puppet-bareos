@@ -10,7 +10,7 @@ A puppet module for the Bareos backup system.
 
 # Requirements
 
-This module requires that [exported resources] have been setup (e.g. with [PuppetDB])
+This module requires that [exported resources] have been setup (e.g. with [PuppetDB]).  Including manifests on the Bareos client, assumes that it can export bits of data to the director to end up with fully functional configs.  As such, to get the benefits of using this module, you should be using it on at least the director and client, and most likely the storage, though this might be gotten around, if one were so inclined.
 
 ## Usage
 
@@ -27,16 +27,16 @@ just updating the hostnames used below to all point to the same system.
 
 #### Defaults
 
-Bareos's functionality depends on connecting several components.  Due to the 
-numebr of moving pieces in this module, you will likely want to set some 
+Bareos's functionality depends on connecting several components, together.  Due
+to the number of moving pieces in this module, you will likely want to set some
 site defaults, and tune more specifically where desired.
 
 As such, it is reasonable to set the following hiera data that will allow 
 many of the classes in this module to use those defaults sanely.
 
 ```
-bareos::params::storage: 'mydirector.example.com'
-bareos::params::director: 'mydirector.example.com'
+bareos::storage_name: 'mystorage.example.com'
+bareos::director_name: 'mydirector.example.com'
 ```
 
 This may be on the same host, or different hosts, but the name you put here 
@@ -45,7 +45,42 @@ classification of `bareos::director`, and the Storage node will require the
 classification of `bareos::storage`.  All nodes will require classification of
  `bareos::client`.
 
-##### ** A NOTE FOR UPGRADERS **
+##### ** Upgrading to 5.x **
+
+The `bareos::params` class has been completely removed.  Any data in your
+primary hiera that used these values will need to be updated.
+
+The variables used to specify the Storage and Director host have been moved.
+Where previously, `bareos::params::director` and `bareos::params::storage`,
+replace them with `bareos::dirctor_name` and `bareos::storage_name`.
+
+Here are is the list of variables that have moved out of the params class.  If
+any of these are set in an environments hiera data, they will not be respected
+and should be moved as follows.
+
+- move bareos::params::file_retention to bareos::client::file_retention
+- move bareos::params::job_retention to bareos::client::job_retention
+- move bareos::params::autoprune to bareos::client::autoprune
+- move bareos::client::director to bareos::client::director_name
+
+- move bareos::params::monitor to bareos::monitor
+- move bareos::params::device_seltype to bareos::device_seltype
+- move bareos::params::ssl to bareos::use_ssl
+
+- move bareos::params::ssl_dir to bareos::ssl::ssl_dir
+- users are required to set baculs::ssl::ssl_dir
+
+The following classes have been relocated as well.  Please update any
+references of the former to reference the latter.
+
+- move class bareos::fileset to bareos::director::fileset
+
+Other data changes are as follows.
+
+- remove needless bareos::client::storage
+- Relocated many `params` variables to `bareos` class
+
+##### ** Upgrading to 4.x **
 
 Several params have been removed and replaced with the default names.  Update
 your hiera data and parameters as follows.
@@ -92,7 +127,7 @@ To enable SSL for the communication between the various components of Bareos,
 the hiera data for SSL must be set.
 
 ```yaml
-bareos::params::ssl: true
+bareos::use_ssl: true
 ```
 
 This will ensure that SSL values are processed in the various templates that
@@ -101,12 +136,12 @@ using the SSL directory for Puppet.  The default value for the Puppet SSL
 directory this module will use is `/etc/puppetlabs/puppet/ssl` to support the
 future unified Puppet deployment.
 
-To change the SSL directory, simply set `bareos::params::ssl_dir`.  For
+To change the SSL directory, simply set `bareos::ssl::ssl_dir`.  For
 example, to use another module for the data source of which SSL directory to
 use for Puppet, something like the following is in order.
 
 ```yaml
-bareos::params::ssl_dir: "%{scope('puppet::params::puppet_ssldir')}"
+bareos::ssl::ssl_dir: "%{scope('puppet::params::puppet_ssldir')}"
 ```
 
 This example assumes that you are using the [ploperations/puppet] module, but
@@ -360,7 +395,7 @@ Define a Bareos [Pool resource]. Parameters are:
 - `voluseduration`:
   Bareos `Volume Use Duration` directive.
 - `storage`: name of the `Storage` resource backing the pool.
-  Defaults to `$bareos::params::storage`. Bareos `Storage` directive.
+  Defaults to `$bareos::storage_name`. Bareos `Storage` directive.
 - `next_pool`: specifies that data from a `Copy` or `Migrate` job should go to the provided pool
 
 

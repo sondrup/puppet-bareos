@@ -2,52 +2,56 @@
 #
 # This class installs a bareos job on the director.  This can be used for specific applications as well as general host backups
 #
-# Parameters:
-#   * files - An array of files that you wish to get backed up on this job for
-#     this host.  ie: ["/etc","/usr/local"]
-#   * excludes - An array of files to skip for the given job.
-#     ie: ["/usr/local/src"]
-#   * fileset - If set to true, a fileset will be genereated based on the files
-#     and exclides paramaters specified above. If set to false, the
-#     job will attempt to use the fileset named "Common". If set to anything
-#     else, provided it's a String, that named fileset will be used.
-#     NOTE: the fileset Common or the defined fileset must be declared elsewhere
-#     for this to work. See Class::Bareos for details.
-#   * runscript - Array of hash(es) containing RunScript directives.
-#   * reshedule_on_error - boolean for enableing disabling job option "Reschedule On Error"
-#   * reshedule_interval - string time-spec for job option "Reschedule Interval"
-#   * reshedule_times - string count for job option "Reschedule Times"
-#   * messages - string containing the name of the message resource to use for this job
-#     set to false to disable this option
-#   * restoredir - string containing the prefix for restore jobs
-#   * sched - string containing the name of the scheduler
-#     set to false to disable this option
-#   * priority - string containing the priority number for the job
-#     set to false to disable this option
-#   * job_tag - string that might be used for grouping of jobs. Pass this to
-#     bareos::director to only collect jobs that match this tag.
+# @param files - An array of files that you wish to get backed up on this job for this host.  ie: ["/etc","/usr/local"]
+# @param excludes - An array of files to skip for the given job.  ie: ["/usr/local/src"]
+# @param fileset - If set to true, a fileset will be genereated based on the files and excludes paramaters specified above. If set to false, the job will attempt to use the fileset named "Common". If set to anything else, provided it's a String, that named fileset will be used.  NOTE: the fileset Common or the defined fileset must be declared elsewhere for this to work. See Class::Bareos for details.
+# @param runscript - Array of hash(es) containing RunScript directives.
+# @param reshedule_on_error - boolean for enableing disabling job option "Reschedule On Error"
+# @param reshedule_interval - string time-spec for job option "Reschedule Interval"
+# @param reshedule_times - string count for job option "Reschedule Times"
+# @param messages - string containing the name of the message resource to use for this job set to false to disable this option
+# @param restoredir - string containing the prefix for restore jobs @param sched - string containing the name of the scheduler set to false to disable this option
+# @param priority - string containing the priority number for the job set to false to disable this option
+# @param job_tag - string that might be used for grouping of jobs. Pass this to bareos::director to only collect jobs that match this tag.
+# @param jobtype
+# @param template
+# @param pool
+# @param pool_full
+# @param pool_inc
+# @param pool_diff
+# @param storate
+# @param jobdef
+# @param level
+# @param accurate
+# @param reschedule_on_error
+# @param reschedule_interval
+# @param reschedule_times
+# @param sched
+# @param selection_type
+# @param selection_pattern
 #
-# Actions:
+# @actions
 #   * Exports job fragment for consuption on the director
 #
 # Requires:
 #   * Class::Bareos {}
 #
-# Sample Usage:
+# @example
 #  bareos::job { "${fqdn}-common":
 #    fileset => "Root",
 #  }
 #
-#  bareos::job { "${fqdn}-mywebapp":
-#    files    => ["/var/www/mywebapp","/etc/mywebapp"],
-#    excludes => ["/var/www/mywebapp/downloads"],
-#  }
+# @example
+#   bareos::job { "${fqdn}-mywebapp":
+#     files    => ["/var/www/mywebapp","/etc/mywebapp"],
+#     excludes => ["/var/www/mywebapp/downloads"],
+#   }
 #
 define bareos::job (
-  Array $files                                        = [],
-  Array $excludes                                     = [],
+  Optional[Array] $files                              = undef,
+  Optional[Array] $excludes                           = undef,
   Bareos::Job_type $jobtype                           = 'Backup',
-  Variant[Boolean, String] $fileset                   = true,
+  Optional[String] $fileset                           = undef,
   String $template                                    = 'bareos/job.conf.erb',
   String $pool                                        = $bareos::client::default_pool,
   Boolean $pool_full                                  = $bareos::client::default_pool_full,
@@ -65,37 +69,43 @@ define bareos::job (
   String $restoredir                                  = '/tmp/bareos-restores',
   Optional[String] $sched                             = undef,
   Optional[String] $priority                          = undef,
-  String $job_tag                                     = $bareos::params::job_tag,
+  Optional[String] $job_tag                           = $bareos::job_tag,
   Optional[Bareos::Job_selectiontype] $selection_type = undef,
   Optional[String] $selection_pattern                 = undef,
 ) {
 
-  include ::bareos::common
-  include ::bareos::params
-  $conf_dir = $bareos::params::conf_dir
+  include ::bareos
+  $conf_dir = $bareos::conf_dir
 
-  # if the fileset is not defined, we fall back to one called "Common"
-  if is_string($fileset) {
-    $fileset_real = $fileset
-  } elsif $fileset == true {
-    if $files == '' { err('you tell me to create a fileset, but no files given') }
-    $fileset_real = $name
-    bareos::fileset { $name:
-      files    => $files,
-      excludes => $excludes,
-      }
-  } else {
-    $fileset_real = 'Common'
+  if empty($files) and ! $fileset {
+    fail('Must pass either a list of files or a fileset')
   }
 
-  if empty($job_tag) {
-    $real_tags = "bareos-${::bareos::params::director}"
+  $tag_defaults = ["bareos-${::bareos::director_name}"]
+
+  if $job_tag {
+    $resource_tags = $tag_defaults + [$job_tag]
   } else {
-    $real_tags = ["bareos-${::bareos::params::director}", $job_tag]
+    $resource_tags = $tag_defaults
+  }
+
+  if $fileset {
+    $fileset_real = $fileset
+  } else {
+    if $files or $excludes {
+      $fileset_real = $name
+      @@bareos::director::fileset { $name:
+        files    => $files,
+        excludes => $excludes,
+        tag      => $resource_tags,
+      }
+    } else {
+      $fileset_real = 'Common'
+    }
   }
 
   @@bareos::director::job { $name:
     content => template($template),
-    tag     => $real_tags,
+    tag     => $resource_tags,
   }
 }

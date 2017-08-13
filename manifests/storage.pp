@@ -1,51 +1,86 @@
-# Class: bareos::storage
+# This class configures the Bareos storage daemon.
 #
-# Configures bareos storage daemon
+# @param bin
+# @param conf_dir
+# @param device
+# @param device_mode
+# @param device_password
+# @param device_seltype
+# @param director_name
+# @param group
+# @param homedir
+# @param include_repo
+# @param install
+# @param listen_address INET or INET6 address to listen on
+# @param maxconcurjobs
+# @param media_type
+# @param packages
+# @param port The listening port for the Storage Daemon
+# @param rundir
+# @param rundir
+# @param services
+# @param storage
+# @param user
+# @param validate_config
 #
 class bareos::storage (
-  Integer[1] $port                 = 9103,
-  String $listen_address           = $::ipaddress,
-  String $storage                  = $::fqdn, # storage here is not params::storage
-  String $password                 = 'secret',
-  String $device_name              = "${::fqdn}-device",
+  String $service,
+  Array[String, 1] $packages,
+  Stdlib::Absolutepath $bin,
+  Stdlib::Absolutepath $conf_dir   = $bareos::conf_dir,
   String $device                   = '/bareos',
   String $device_mode              = '0770',
-  String $device_owner             = $bareos::params::bareos_user,
-  Optional[String] $device_seltype = $bareos::params::device_seltype,
-  String $media_type               = 'File',
+  String $device_name              = "${trusted['fqdn']}-device",
+  String $device_owner             = $bareos::bareos_user,
+  Optional[String] $device_seltype = $bareos::device_seltype,
+  String $director_name            = $bareos::director_name,
+  String $group                    = $bareos::bareos_group,
+  Stdlib::Absolutepath $homedir    = $bareos::homedir,
+  String $listen_address           = $facts['ipaddress'],
   Integer[1] $maxconcurjobs        = 5,
-  Array[String, 1] $packages       = $bareos::params::bareos_storage_packages,
-  String $service                  = $bareos::params::bareos_storage_service,
-  Stdlib::Absolutepath $homedir    = $bareos::params::homedir,
-  Stdlib::Absolutepath $rundir     = $bareos::params::rundir,
-  Stdlib::Absolutepath $conf_dir   = $bareos::params::conf_dir,
-  String $director                 = $bareos::params::director,
-  String $user                     = $bareos::params::bareos_user,
-  String $group                    = $bareos::params::bareos_group,
-  Stdlib::Absolutepath $bin        = $bareos::params::bareos_storage_bin,
+  String $media_type               = 'File',
+  String $password                 = 'secret',
+  Integer[1] $port                 = 9103,
+  Stdlib::Absolutepath $rundir     = $bareos::rundir,
+  String $storage                  = $facts['fqdn'], # storage here is not storage_name
+  String $user                     = $bareos::bareos_user,
   Boolean $validate_config         = true,
   Boolean $include_repo            = true,
   Boolean $install                 = true,
-) inherits bareos::params {
-
-  include ::bareos::common
-  include ::bareos::ssl
-  include ::bareos::virtual
+) inherits ::bareos {
 
   if $include_repo {
     include '::bareos::repo'
   }
 
   if $install {
-    realize(Package[$packages])
+    # Packages are virtual due to some platforms shipping the
+    # SD and Dir as part of the same package.
+    include ::bareos::virtual
+
+    # Allow for package names to include EPP syntax for db_type
+    $db_type = lookup('bareos::director::db_type')
+    $package_names = $packages.map |$p| {
+      $package_name = inline_epp($p, {
+        'db_type' => $db_type
+      })
+    }
+
+    realize(Package[$package_names])
+
+    Package[$package_names] -> Service['bareos-sd']
   }
 
   service { 'bareos-sd':
-    ensure    => running,
-    name      => $service,
-    enable    => true,
-    subscribe => File[$bareos::ssl::ssl_files],
-    require   => Package[$packages],
+    ensure  => running,
+    name    => $service,
+    enable  => true,
+    require => Package[$packages],
+  }
+
+  if $::bareos::use_ssl == true {
+    include ::bareos::ssl
+    File[$::bareos::ssl::ssl_files] ~> Service['bareos-sd']
   }
 
   concat::fragment { 'bareos-storage-header':
@@ -61,14 +96,14 @@ class bareos::storage (
 
   bareos::messages { 'Standard-sd':
     daemon   => 'sd',
-    director => "${director}-dir = all",
+    director => "${director_name}-dir = all",
     syslog   => 'all, !skipped',
     append   => '"/var/log/bareos/bareos-sd.log" = all, !skipped',
   }
 
   # Realize the clause the director is exporting here so we can allow access to
   # the storage daemon Adds an entry to ${conf_dir}/bareos-sd.conf
-  Concat::Fragment <<| tag == "bareos-storage-dir-${director}" |>>
+  Concat::Fragment <<| tag == "bareos-storage-dir-${director_name}" |>>
 
   $validate_cmd = $validate_config ? {
     false   => undef,
@@ -102,6 +137,6 @@ class bareos::storage (
     device_name   => $device_name,
     media_type    => $media_type,
     maxconcurjobs => $maxconcurjobs,
-    tag           => "bareos-${::bareos::params::storage}",
+    tag           => "bareos-${director_name}",
   }
 }

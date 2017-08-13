@@ -16,13 +16,13 @@ Job {
 <%   end -%>
 <% elsif @jobtype == "Backup" -%>
 <% if @pool_full -%>
-    Full Backup Pool        = <%= scope.lookupvar('bareos::params::storage') %>-Pool-Full
+    Full Backup Pool         = <%= scope.lookupvar('bareos::storage') %>-Pool-Full
 <% end -%>
 <% if @pool_inc -%>
-    Incremental Backup Pool  = <%= scope.lookupvar('bareos::params::storage') %>-Pool-Inc
+    Incremental Backup Pool  = <%= scope.lookupvar('bareos::storage') %>-Pool-Inc
 <% end -%>
 <% if @pool_diff -%>
-    Differential Backup Pool = <%= scope.lookupvar('bareos::params::bareos_storage') %>-Pool-Diff
+    Differential Backup Pool = <%= scope.lookupvar('bareos::storage') %>-Pool-Diff
 <% end -%>
 <% elsif @jobtype == "Copy" or @jobtype == "Migrate" -%>
 <% if @selection_type -%>
@@ -39,6 +39,9 @@ Job {
 <% @runscript.each do |script| -%>
     RunScript {
       RunsWhen = <%= script.fetch('runs_when') %>
+<% if script['fail_job_on_error'] -%>
+      FailJobOnError = <%= script.fetch('fail_job_on_error') %>
+<% end -%>
 <% if script['runs_on_success'] -%>
       RunsOnSuccess = <%= script.fetch('runs_on_success') %>
 <% end -%>
@@ -47,9 +50,6 @@ Job {
 <% end -%>
 <% if script['runs_on_client'] -%>
       RunsOnClient = <%= script.fetch('runs_on_client') %>
-<% end -%>
-<% if script['fail_job_on_error'] -%>
-      FailJobOnError = <%= script.fetch('fail_job_on_error') %>
 <% end -%>
       Command = <%= script.fetch('command').inspect %>
 <% if script['console'] -%>

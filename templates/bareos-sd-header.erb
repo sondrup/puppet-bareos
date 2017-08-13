@@ -9,7 +9,7 @@ Storage {
 <% end -%>
 <%= scope.function_template(['bareos/_ssl.erb']) -%>
 <%= scope.function_template(['bareos/_sslkeypair.erb']) -%>
-<% if scope.lookupvar('bareos::params::ssl') -%>
+<% if scope.lookupvar('bareos::use_ssl') -%>
     TLS Verify Peer         = no
 <% end -%>
 }

@@ -10,3 +10,21 @@ bareos::director::messages:
       append:       '"/var/log/bareos/log" = all, !skipped'
       catalog:      'all'
 bareos::director::postgresql::make_bareos_tables: ''
+bareos::director::db_type: 'postgresql'
+bareos::director::packages: []
+bareos::director::bin: '/usr/sbin/bareos-dir'
+#bareos::ssl::ssl_dir: '/etc/puppetlabs/puppet/ssl'
+certfile: "%{hiera('bareos::conf_dir')}/ssl/${::clientcert}_cert.pem"
+keyfile: "%{conf_dir}/ssl/${::clientcert}_key.pem"
+cafile: "%{conf_dir}/ssl/ca.pem"
+
+bareos::storage::services: 'bareos-sd'
+bareos::storage::bin: '/usr/sbin/bareos-sd'
+bareos::storage_name: '%{trusted.certname}'
+
+bareos::director_name: '%{trusted.certname}'
+bareos::director_address: '%{trusted.certname}'
+bareos::job_tag: ~
+
+bareos::client::service: 'bareos-fd'
+bareos::client::bin: '/usr/sbin/bareos-fd'

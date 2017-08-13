@@ -1,4 +1,4 @@
-<% if scope.lookupvar('bareos::params::ssl') -%>
+<% if scope.lookupvar('bareos::use_ssl') -%>
     TLS Enable              = yes
     TLS Require             = yes
     TLS CA Certificate File = <%= @conf_dir %>/ssl/ca.pem

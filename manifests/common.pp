@@ -1,27 +1,34 @@
-# = Class: bareos::common
-#
-# == Description
-#
-# This class configures and installs the bareos client packages and enables
-# the service, so that bareos jobs can be run on the client including this
+# This class configures and installs the bareos client packages and enables the
+# service, so that bareos jobs can be run on the client including this
 # manifest.
 #
-class bareos::common (
-  Stdlib::Absolutepath $homedir = $bareos::params::homedir,
-  String $homedir_mode          = '0770',
-  String $package               = $bareos::params::bareos_client_package,
-  String $user                  = $bareos::params::bareos_user,
-  String $group                 = $bareos::params::bareos_group,
-) inherits bareos::params {
-
-  include ::bareos::ssl
+class bareos::common {
+  include ::bareos
   include ::bareos::client
 
-  file { $homedir:
+  $conf_dir        = $::bareos::conf_dir
+  $bareos_user     = $::bareos::bareos_user
+  $bareos_group    = $::bareos::bareos_group
+  $homedir         = $::bareos::homedir
+  $homedir_mode    = $::bareos::homedir_mode
+  $client_package  = $::bareos::client::package
+
+  File {
     ensure  => directory,
-    owner   => $user,
-    group   => $group,
-    mode    => $homedir_mode,
-    require => Package[$package],
+    owner   => $bareos_user,
+    group   => $bareos_group,
+    require => Package[$client_package],
   }
+
+  file { $homedir:
+    mode => $homedir_mode,
+  }
+
+  file { $conf_dir:
+    ensure => 'directory',
+    owner  => $bareos_user,
+    group  => $bareos_group,
+    mode   => '0750',
+  }
+
 }

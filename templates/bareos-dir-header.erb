@@ -13,26 +13,23 @@ Director {                # define myself
     Messages                = Daemon
 <%= scope.function_template(['bareos/_ssl.erb']) %>
 <%= scope.function_template(['bareos/_sslkeypair.erb']) %>
-<% if scope.lookupvar('bareos::params::ssl') -%>
+<% if scope.lookupvar('bareos::use_ssl') -%>
     TLS Verify Peer         = yes
-    TLS DH File             = <%= @conf_dir %>/ssl/dh1024.pem
+    TLS DH File             = <%= @conf_dir %>/ssl/dh2048.pem
 <% end -%>
-}
-
-Pool {
-    Name            = Default
-    Pool Type       = Backup
-    Action On Purge = Truncate
-    Label Format    = Default-
-    Storage         = <%= @storage %>-sd
 }
 
 # Generic catalog service
 Catalog {
     Name   = MyCatalog
     dbdriver = "<%= @db_type %>"
-    dbaddress = "<%= @db_address %>";
     dbname = "<%= @db_name %>";
     dbuser = "<%= @db_user %>";
-    dbpassword = "<%= @db_pw %>"
+    dbpassword = "<%= @db_pw %>";
+<% if @db_address -%>
+    DB Address = <%= @db_address %>
+<% end -%>
+<% if @db_port -%>
+    DB Port = <%= @db_port %>
+<% end -%>
 }

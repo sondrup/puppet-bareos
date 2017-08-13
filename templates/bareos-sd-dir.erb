@@ -1,10 +1,10 @@
 # Permit the Director to contact this SD
 Director {
-    Name                    = <%= @director %>-dir
+    Name                    = <%= @director_name %>-dir
     Password                = "<%= @password %>"
 <%= scope.function_template(['bareos/_ssl.erb']) %>
 <%= scope.function_template(['bareos/_sslkeypair.erb']) %>
-<% if scope.lookupvar('bareos::params::ssl') -%>
+<% if scope.lookupvar('bareos::use_ssl') -%>
     TLS Verify Peer         = yes
 <% end -%>
 }
