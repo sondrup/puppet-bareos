@@ -13,7 +13,7 @@ bareos::storage::service: 'bareos-sd'
 
 bareos::conf_dir: '/etc/bareos'
 bareos::homedir: '/var/lib/bareos'
-bareos::rundir: '/var/run/bareos'
+bareos::rundir: '/var/lib/bareos'
 bareos::bareos_user: 'bareos'
 bareos::bareos_group: 'bareos'
 bareos::ssl::ssl_dir: '/etc/puppetlabs/puppet/ssl'
