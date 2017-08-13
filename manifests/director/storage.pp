@@ -12,7 +12,8 @@
 # @param maxconcurjob - Bareos director configuration for Storage option 'Media Type'
 #
 define bareos::director::storage (
-  Integer[1] $port               = 9103,
+  Integer[1] $address       = $name,
+  $port               = 9103,
   String $password               = 'secret',
   String $device_name            = "${::fqdn}-device",
   String $media_type             = 'File',

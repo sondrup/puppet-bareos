@@ -25,6 +25,6 @@ define bareos::director::job (
     target  => "${conf_dir}/bareos-dir.conf",
     content => $content,
     order   => $name,
-    tag     => "bareos-${::bareos::director}",
+    tag     => "bareos-${::bareos::director_name}",
   }
 }

@@ -30,7 +30,7 @@ class bareos::storage (
   Stdlib::Absolutepath $conf_dir   = $bareos::conf_dir,
   String $device                   = '/bareos',
   String $device_mode              = '0770',
-  String $device_name              = "${trusted['fqdn']}-device",
+  String $device_name              = "${trusted['certname']}-device",
   String $device_owner             = $bareos::bareos_user,
   Optional[String] $device_seltype = $bareos::device_seltype,
   String $director_name            = $bareos::director_name,
@@ -42,7 +42,8 @@ class bareos::storage (
   String $password                 = 'secret',
   Integer[1] $port                 = 9103,
   Stdlib::Absolutepath $rundir     = $bareos::rundir,
-  String $storage                  = $facts['fqdn'], # storage here is not storage_name
+  String $storage                  = $trusted['certname'], # storage here is not storage_name
+  $address        = $facts['fqdn'],
   String $user                     = $bareos::bareos_user,
   Boolean $validate_config         = true,
   Boolean $include_repo            = true,
@@ -89,6 +90,10 @@ class bareos::storage (
     content => template('bareos/bareos-sd-header.erb'),
   }
 
+  bacula::storage::device { $device_name:
+    device => $device,
+  }
+
   concat::fragment { 'bareos-storage-dir':
     target  => "${conf_dir}/bareos-sd.conf",
     content => template('bareos/bareos-sd-dir.erb'),
@@ -120,18 +125,8 @@ class bareos::storage (
     validate_cmd => $validate_cmd,
   }
 
-  if $media_type == 'File' {
-    file { $device:
-      ensure  => directory,
-      owner   => $device_owner,
-      group   => $group,
-      mode    => $device_mode,
-      seltype => $device_seltype,
-      require => Package[$packages],
-    }
-  }
-
   @@bareos::director::storage { $storage:
+    address       => $address,
     port          => $port,
     password      => $password,
     device_name   => $device_name,

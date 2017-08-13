@@ -21,6 +21,7 @@ define bareos::jobdefs (
   Boolean $reschedule_on_error      = false,
   Bareos::Time $reschedule_interval = '1 hour',
   Integer[1] $reschedule_times      = 10,
+  $max_concurrent_jobs = '1',
 ) {
 
   include ::bareos

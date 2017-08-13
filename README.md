@@ -10,7 +10,12 @@ A puppet module for the Bareos backup system.
 
 # Requirements
 
-This module requires that [exported resources] have been setup (e.g. with [PuppetDB]).  Including manifests on the Bareos client, assumes that it can export bits of data to the director to end up with fully functional configs.  As such, to get the benefits of using this module, you should be using it on at least the director and client, and most likely the storage, though this might be gotten around, if one were so inclined.
+This module requires that [exported resources] have been setup (e.g. with
+[PuppetDB]).  Including manifests on the Bareos client, assumes that it can
+export bits of data to the director to end up with fully functional configs.
+As such, to get the benefits of using this module, you should be using it on at
+least the director and client, and most likely the storage, though this might
+be gotten around, if one were so inclined.
 
 ## Usage
 
@@ -22,8 +27,8 @@ useful start to begin understanding the moving parts.
 What follows here is the bare minimum you would need to get a fully functional
 Bareos environment with Puppet.  This setup assumes that the three components
 of Bareos (Director, Storage, and Client) all run on three separate nodes.  If
-desired, there is no reason this setup can not be build up on a single node,
-just updating the hostnames used below to all point to the same system.
+desired, there is no reason this setup can not be built on a single node, just
+updating the hostnames used below to all point to the same system.
 
 #### Defaults
 
@@ -39,11 +44,19 @@ bareos::storage_name: 'mystorage.example.com'
 bareos::director_name: 'mydirector.example.com'
 ```
 
+##### Classification
+
 This may be on the same host, or different hosts, but the name you put here 
 should be the fqdn of the target system.  The Director will require the 
 classification of `bareos::director`, and the Storage node will require the 
-classification of `bareos::storage`.  All nodes will require classification of
- `bareos::client`.
+classification of `bareos::storage`.  **All nodes will require classification of
+ `bareos::client`.**
+
+##### Prefer hiera data
+
+Users should prefer setting hiera data to set class parameter values where
+possible.  A couple calls in this module rely on hiera data present to avoid
+scoping issues associated with defined types and default values.
 
 ##### ** Upgrading to 5.x **
 
@@ -52,7 +65,7 @@ primary hiera that used these values will need to be updated.
 
 The variables used to specify the Storage and Director host have been moved.
 Where previously, `bareos::params::director` and `bareos::params::storage`,
-replace them with `bareos::dirctor_name` and `bareos::storage_name`.
+replace them with `bareos::director_name` and `bareos::storage_name`.
 
 Here are is the list of variables that have moved out of the params class.  If
 any of these are set in an environments hiera data, they will not be respected

@@ -14,9 +14,6 @@ bareos::director::db_type: 'postgresql'
 bareos::director::packages: []
 bareos::director::bin: '/usr/sbin/bareos-dir'
 #bareos::ssl::ssl_dir: '/etc/puppetlabs/puppet/ssl'
-certfile: "%{hiera('bareos::conf_dir')}/ssl/${::clientcert}_cert.pem"
-keyfile: "%{conf_dir}/ssl/${::clientcert}_key.pem"
-cafile: "%{conf_dir}/ssl/ca.pem"
 
 bareos::storage::services: 'bareos-sd'
 bareos::storage::bin: '/usr/sbin/bareos-sd'
@@ -26,5 +23,10 @@ bareos::director_name: '%{trusted.certname}'
 bareos::director_address: '%{trusted.certname}'
 bareos::job_tag: ~
 
-bareos::client::service: 'bareos-fd'
+bareos::client::services: 'bareos-fd'
 bareos::client::bin: '/usr/sbin/bareos-fd'
+bareos::client::packages: ~
+bareos::client::default_pool: 'Default'
+bareos::client::default_pool_full: ~
+bareos::client::default_pool_inc: ~
+bareos::client::default_pool_diff: ~

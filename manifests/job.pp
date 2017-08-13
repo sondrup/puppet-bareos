@@ -15,11 +15,11 @@
 # @param job_tag - string that might be used for grouping of jobs. Pass this to bareos::director to only collect jobs that match this tag.
 # @param jobtype
 # @param template
-# @param pool
-# @param pool_full
-# @param pool_inc
-# @param pool_diff
-# @param storate
+# @param pool - string name of the pool to use by default for this job
+# @param pool_full - string name of the pool to use for Full jobs
+# @param pool_inc - string name of the pool to use for Incremental jobs
+# @param pool_diff - string name of the pool to use for Differential jobs
+# @param storage
 # @param jobdef
 # @param level
 # @param accurate
@@ -53,10 +53,10 @@ define bareos::job (
   Bareos::Job_type $jobtype                           = 'Backup',
   Optional[String] $fileset                           = undef,
   String $template                                    = 'bareos/job.conf.erb',
-  String $pool                                        = $bareos::client::default_pool,
-  Boolean $pool_full                                  = $bareos::client::default_pool_full,
-  Boolean $pool_inc                                   = $bareos::client::default_pool_inc,
-  Boolean $pool_diff                                  = $bareos::client::default_pool_diff,
+  Optional[String] $pool                              = lookup('bareos::client::default_pool'),
+  Optional[String] $pool_full                         = lookup('bareos::client::default_pool_full'),
+  Optional[String] $pool_inc                          = lookup('bareos::client::default_pool_inc'),
+  Optional[String] $pool_diff                         = lookup('bareos::client::default_pool_diff'),
   Optional[String] $storage                           = undef,
   Optional[String] $jobdef                            = $jobtype ? { 'backup' => 'Default', default  => undef, },
   Array[Bareos::Runscript] $runscript                 = [],
@@ -69,9 +69,10 @@ define bareos::job (
   String $restoredir                                  = '/tmp/bareos-restores',
   Optional[String] $sched                             = undef,
   Optional[String] $priority                          = undef,
-  Optional[String] $job_tag                           = $bareos::job_tag,
+  Optional[String] $job_tag                           = undef,
   Optional[Bareos::Job_selectiontype] $selection_type = undef,
   Optional[String] $selection_pattern                 = undef,
+  $max_concurrent_jobs                                = '1',
 ) {
 
   include ::bareos
@@ -86,7 +87,11 @@ define bareos::job (
   if $job_tag {
     $resource_tags = $tag_defaults + [$job_tag]
   } else {
-    $resource_tags = $tag_defaults
+    if $::bareos::job_tag {
+      $resource_tags = $tag_defaults + [$::bareos::job_tag]
+    } else {
+      $resource_tags = $tag_defaults
+    }
   }
 
   if $fileset {

@@ -1,19 +1,10 @@
 # Manage the SSL deployment for bareos components, Director, Storage, and File
 # daemons.
 #
-# @param certfile
-# @param keyfile
-# @param cafile
 # @param packages
 #
 # @example
-#   include bareos::ssl
-
-#bareos::ssl {
-#  certfile_source => '/etc/dehydrated/certfile.pem',
-#  keyfile_source  => '/etc/dehydrated/keyfile.pem',
-#  cafile_source   => '/etc/dehydrated/cafile.pem',
-#}
+#   include bacula::ssl
 #
 # @example in hiera
 #   TODO
@@ -21,17 +12,13 @@
 # TODO make DH key length configurable
 #
 class bareos::ssl (
-  #Optional[String] $certfile = undef,
-  #Optional[String] $keyfile  = undef,
-  #Optional[String] $cafile   = undef,
-  #Array $packages            = [],
   String $ssl_dir,
 ) {
 
   include ::bareos
   include ::bareos::client
 
-  $conf_dir    = $::bareos::conf_dir
+  $conf_dir     = $::bareos::conf_dir
   $bareos_user = $::bareos::bareos_user
 
   $certfile = "${conf_dir}/ssl/${trusted['certname']}_cert.pem"
@@ -81,7 +68,7 @@ class bareos::ssl (
     path    => '/usr/bin:/usr/sbin:/bin:/sbin:/usr/local/bin:/usr/local/sbin',
     cwd     => $bareos_ssl_dir,
     creates => "${bareos_ssl_dir}/dh2048.pem",
-    timeout => '1800',
+    timeout => 0,
     require => File[$bareos_ssl_dir],
   }
 }

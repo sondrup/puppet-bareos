@@ -16,13 +16,13 @@ Job {
 <%   end -%>
 <% elsif @jobtype == "Backup" -%>
 <% if @pool_full -%>
-    Full Backup Pool         = <%= scope.lookupvar('bareos::storage') %>-Pool-Full
+    Full Backup Pool         = <%= @pool_full %>
 <% end -%>
 <% if @pool_inc -%>
-    Incremental Backup Pool  = <%= scope.lookupvar('bareos::storage') %>-Pool-Inc
+    Incremental Backup Pool  = <%= @pool_inc %>
 <% end -%>
 <% if @pool_diff -%>
-    Differential Backup Pool = <%= scope.lookupvar('bareos::storage') %>-Pool-Diff
+    Differential Backup Pool = <%= @pool_diff %>
 <% end -%>
 <% elsif @jobtype == "Copy" or @jobtype == "Migrate" -%>
 <% if @selection_type -%>
@@ -71,4 +71,7 @@ Job {
     Priority         = <%= @priority %>
 <% end -%>
 <%= scope.function_template(['bareos/_job_reschedule.erb']) -%>
+<% if @max_concurrent_jobs -%>
+    Maximum Concurrent Jobs = <%= @max_concurrent_jobs %>
+<% end -%>
 }

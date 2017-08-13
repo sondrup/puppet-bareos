@@ -9,7 +9,7 @@
 # @param director_address
 # @param group
 # @param homedir
-# @param job_tag
+# @param job_tag A string to use when realizing jobs and filesets
 # @param listen_address
 # @param max_concurrent_jobs
 # @param messages
@@ -143,7 +143,7 @@ class bareos::director (
   Bareos::Director::Client <<| tag == "bareos-${director}" |>> { conf_dir => $conf_dir }
 
   if $job_tag {
-    Bareos::Director::Fileset <<| tag == "bareos-${director}" |>> { conf_dir => $conf_dir }
+    Bareos::Director::Fileset <<| tag == $job_tag |>> { conf_dir => $conf_dir }
     Bareos::Director::Job <<| tag == $job_tag |>> { conf_dir => $conf_dir }
     # TODO tag pool resources on export when job_tag is defined
     Bareos::Director::Pool <<|tag == $job_tag |>> { conf_dir => $conf_dir }
@@ -177,9 +177,10 @@ class bareos::director (
   }
 
   bareos::job { 'RestoreFiles':
-    jobtype  => 'Restore',
-    jobdef   => undef,
-    messages => 'Standard',
-    fileset  => 'Common',
+    jobtype             => 'Restore',
+    jobdef              => undef,
+    messages            => 'Standard',
+    fileset             => 'Common',
+    max_concurrent_jobs => $max_concurrent_jobs,
   }
 }

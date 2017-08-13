@@ -3,7 +3,6 @@
 # define.  This is the director's configuration for a given client.
 #
 # @param port
-# @param client
 # @param password
 # @param file_retention
 # @param job_retention
@@ -13,7 +12,6 @@
 # @example Taken from the `bareos::client` define:
 #   @@bareos::director::client { $client:
 #     port           => $port,
-#     client         => $client,
 #     password       => $password,
 #     autoprune      => $autoprune,
 #     file_retention => $file_retention,
@@ -22,8 +20,8 @@
 #   }
 #
 define bareos::director::client (
-  Integer[1] $port,
-  String $client,
+  Integer[1] $address,
+  String $port,
   String $password,
   Bareos::Time $file_retention,
   Bareos::Time $job_retention,
@@ -31,7 +29,7 @@ define bareos::director::client (
   Stdlib::Absolutepath $conf_dir = $::bareos::conf_dir
 ) {
 
-  concat::fragment { "bareos-director-client-${client}":
+  concat::fragment { "bareos-director-client-${name}":
     target  => "${conf_dir}/bareos-dir.conf",
     order   => "410-${client}",
     content => template('bareos/bareos-dir-client.erb'),
