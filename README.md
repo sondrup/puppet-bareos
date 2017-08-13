@@ -81,7 +81,7 @@ and should be moved as follows.
 - move bareos::params::ssl to bareos::use_ssl
 
 - move bareos::params::ssl_dir to bareos::ssl::ssl_dir
-- users are required to set baculs::ssl::ssl_dir
+- users are required to set bareos::ssl::ssl_dir
 
 The following classes have been relocated as well.  Please update any
 references of the former to reference the latter.

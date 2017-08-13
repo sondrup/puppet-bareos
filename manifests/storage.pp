@@ -43,7 +43,7 @@ class bareos::storage (
   Integer[1] $port                 = 9103,
   Stdlib::Absolutepath $rundir     = $bareos::rundir,
   String $storage                  = $trusted['certname'], # storage here is not storage_name
-  $address        = $facts['fqdn'],
+  String $address                  = $facts['fqdn'],
   String $user                     = $bareos::bareos_user,
   Boolean $validate_config         = true,
   Boolean $include_repo            = true,
@@ -90,7 +90,7 @@ class bareos::storage (
     content => template('bareos/bareos-sd-header.erb'),
   }
 
-  bacula::storage::device { $device_name:
+  bareos::storage::device { $device_name:
     device => $device,
   }
 

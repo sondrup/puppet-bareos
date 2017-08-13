@@ -31,7 +31,7 @@ class bareos::client (
   Integer[1] $port                = 9102,
   String $listen_address          = $facts['ipaddress'],
   String $password                = 'secret',
-  $max_concurrent_jobs            = '2',
+  Integer[1] $max_concurrent_jobs = 2,
   String $director_name           = $bareos::director_name,
   Bareos::Yesno $autoprune        = 'yes',
   Bareos::Time $file_retention    = '45 days',

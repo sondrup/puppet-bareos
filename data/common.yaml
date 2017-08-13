@@ -23,7 +23,7 @@ bareos::director_name: '%{trusted.certname}'
 bareos::director_address: '%{trusted.certname}'
 bareos::job_tag: ~
 
-bareos::client::services: 'bareos-fd'
+bareos::client::service: 'bareos-fd'
 bareos::client::bin: '/usr/sbin/bareos-fd'
 bareos::client::packages: ~
 bareos::client::default_pool: 'Default'

@@ -20,8 +20,8 @@
 #   }
 #
 define bareos::director::client (
-  Integer[1] $address,
-  String $port,
+  String $address,
+  Integer[1] $port,
   String $password,
   Bareos::Time $file_retention,
   Bareos::Time $job_retention,
@@ -31,7 +31,7 @@ define bareos::director::client (
 
   concat::fragment { "bareos-director-client-${name}":
     target  => "${conf_dir}/bareos-dir.conf",
-    order   => "410-${client}",
+    order   => "410-${name}",
     content => template('bareos/bareos-dir-client.erb'),
   }
 }

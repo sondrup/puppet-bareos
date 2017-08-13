@@ -72,7 +72,7 @@ define bareos::job (
   Optional[String] $job_tag                           = undef,
   Optional[Bareos::Job_selectiontype] $selection_type = undef,
   Optional[String] $selection_pattern                 = undef,
-  $max_concurrent_jobs                                = '1',
+  Optional[Integer[1]] $max_concurrent_jobs           = 1,
 ) {
 
   include ::bareos

@@ -4,7 +4,7 @@ describe 'bareos::client' do
   on_supported_os.each do |os, facts|
     context "on #{os}" do
       let(:node) { 'foo.example.com' }
-      bareos      let(:facts) { facts }
+      let(:facts) { facts }
       let(:params) do
         {
           client: param_client,

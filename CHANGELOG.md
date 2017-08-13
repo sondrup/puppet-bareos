@@ -10,7 +10,7 @@ people who sent in PRs for this work and filed issues.
 
 ### Features
 * Encourage hiera for class params in documentation
-* Create bacula::storage::device define for greater flexibility
+* Create bareos::storage::device define for greater flexibility
 * Add support for Max Concurrent Jobs tuning
 * Use trusted facts for node name references
 

@@ -4,7 +4,7 @@
 # @param packages
 #
 # @example
-#   include bacula::ssl
+#   include bareos::ssl
 #
 # @example in hiera
 #   TODO
