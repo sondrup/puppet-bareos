@@ -40,10 +40,6 @@ class bareos::ssl (
       mode    => '0640',
       require => Package[$bareos::client::package],;
 
-    $conf_dir:
-      ensure => 'directory',
-      before => File[$bareos_ssl_dir],;
-
     $bareos_ssl_dir:
       ensure  => 'directory',
       require => File[$conf_dir],

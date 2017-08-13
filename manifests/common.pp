@@ -13,22 +13,21 @@ class bareos::common {
   $homedir_mode    = $::bareos::homedir_mode
   $client_package  = $::bareos::client::package
 
-  File {
-    ensure  => directory,
-    owner   => $bareos_user,
-    group   => $bareos_group,
-    require => Package[$client_package],
-  }
+  file {
+    default:
+      ensure  => directory,
+      owner   => $bareos_user,
+      group   => $bareos_group,
+      require => Package[$client_package],;
 
-  file { $homedir:
-    mode => $homedir_mode,
-  }
+    $homedir:
+      mode => $homedir_mode,;
 
-  file { $conf_dir:
-    ensure => 'directory',
-    owner  => $bareos_user,
-    group  => $bareos_group,
-    mode   => '0750',
+    $conf_dir:
+      ensure => 'directory',
+      owner  => $bareos_user,
+      group  => $bareos_group,
+      mode   => '0750',;
   }
 
 }
