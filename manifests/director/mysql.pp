@@ -1,11 +1,11 @@
-# Deploys a postgres database server for hosting the Bareos director database.
+# Deploys a mysql database server for hosting the Bareos director database.
 #
 # @param make_bareos_tables
 # @param db_name
 # @param db_pw
 # @param db_user
 #
-class bareos::director::postgresql(
+class bareos::director::mysql(
   String $make_bareos_tables     = '',
   String $db_name                = $bareos::director::db_name,
   String $db_pw                  = $bareos::director::db_pw,
@@ -18,12 +18,16 @@ class bareos::director::postgresql(
   $user = $::bareos::bareos_user
 
   if $bareos::director::manage_db {
-    require ::postgresql::server
-    postgresql::server::db { $db_name:
-      user     => $db_user,
-      password => postgresql_password($db_user, $db_pw),
-      encoding => 'SQL_ASCII',
-      locale   => 'C',
+    require ::mysql::server
+    mysql::db { $app_name:
+      ensure   => present,
+      user     => $user,
+      dbname   => $db_user,
+      password => $db_pw,
+      host     => $host,
+      grant    => 'ALL',
+      charset  => 'utf8',
+      collate  => 'urf8_bin',
       notify   => Exec["/bin/sh ${make_bareos_tables}"],
     }
   }

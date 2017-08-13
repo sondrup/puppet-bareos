@@ -1,5 +1,6 @@
 ---
 bareos::director::postgresql::make_bareos_tables: '/usr/lib/bareos/scripts/make_bareos_tables'
+bareos::director::mysql::make_bareos_tables: '/usr/lib/bareos/scripts/make_bareos_tables'
 bareos::director::packages:
   - 'bareos-director'
   - 'bareos-database-<%= $db_type %>'

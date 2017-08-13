@@ -69,6 +69,7 @@ class bareos::director (
 
   case $db_type {
     'postgresql': { include ::bareos::director::postgresql }
+    'mysql': { include ::bareos::director::mysql }
     'none':       { }
     default:      { fail('No db_type set') }
   }
