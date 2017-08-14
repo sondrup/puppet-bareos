@@ -23,7 +23,6 @@ class bareos::director::mysql(
       ensure   => present,
       user     => $db_user,
       password => $db_pw,
-      host     => $host,
       grant    => 'ALL',
       charset  => 'utf8',
       collate  => 'utf8_bin',
