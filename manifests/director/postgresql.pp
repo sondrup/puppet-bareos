@@ -32,7 +32,7 @@ class bareos::director::postgresql(
     user        => $user,
     refreshonly => true,
     environment => ["db_name=${db_name}"],
-    require     => "${conf_dir}/bareos-dir.conf",
+    require     => File["${conf_dir}/bareos-dir.conf"],
     notify      => Service['bareos-director'],
   }
 }
