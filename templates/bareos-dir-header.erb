@@ -2,7 +2,7 @@ Director {                # define myself
     Name                    = <%= @clientcert %>-dir
 <% if @listen_address -%>
     DirAddresses            = {
-<%= scope.function_template(['bareos/_listen.erb']) %>
+<%= scope.function_template(['bareos/_listen.erb']) -%>
     }
 <% end -%>
     QueryFile               = "/etc/bareos/scripts/query.sql"
