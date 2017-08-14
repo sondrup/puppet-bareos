@@ -2,10 +2,10 @@ Device {
     Name           = <%= @device_name %>
     Media Type     = <%= @media_type %>
     Archive Device = <%= @device %>
-    LabelMedia     = <%= @label_media     ? 'yes' : 'no' %>; # lets Bareos label unlabeled media
-    Random Access  = <%= @random_access   ? 'yes' : 'no' %>;
-    AutomaticMount = <%= @automatic_mount ? 'yes' : 'no' %>;
-    RemovableMedia = <%= @removable_media ? 'yes' : 'no' %>;
-    AlwaysOpen     = <%= @always_open     ? 'yes' : 'no' %>;
+    LabelMedia     = <%= @label_media %>; # lets Bareos label unlabeled media
+    Random Access  = <%= @random_access %>;
+    AutomaticMount = <%= @automatic_mount %>;
+    RemovableMedia = <%= @removable_media %>;
+    AlwaysOpen     = <%= @always_open %>;
     Maximum Concurrent Jobs = <%= @maxconcurjobs %>
 }
