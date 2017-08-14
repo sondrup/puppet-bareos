@@ -70,13 +70,13 @@ class bareos::storage (
     realize(Package[$package_names])
 
     Package[$package_names] -> Service['bareos-sd']
+    Package[$package_names] -> Concat["${conf_dir}/bareos-sd.conf"]
   }
 
   service { 'bareos-sd':
     ensure  => running,
     name    => $service,
     enable  => true,
-    require => Package[$packages],
   }
 
   if $::bareos::use_ssl == true {
@@ -120,7 +120,6 @@ class bareos::storage (
     group        => $group,
     mode         => '0640',
     show_diff    => false,
-    require      => Package[$packages],
     notify       => Service['bareos-sd'],
     validate_cmd => $validate_cmd,
   }

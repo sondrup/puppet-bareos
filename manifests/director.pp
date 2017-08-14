@@ -89,6 +89,7 @@ class bareos::director (
     realize(Package[$package_names])
 
     Package[$package_names] -> Service['bareos-director']
+    Package[$package_names] -> Concat["${conf_dir}/bareos-dir.conf"]
   }
 
   service { 'bareos-director':
@@ -123,7 +124,6 @@ class bareos::director (
     mode         => '0640',
     warn         => true,
     show_diff    => false,
-    require      => Package[$packages],
     notify       => Service['bareos-director'],
     validate_cmd => $validate_cmd,
   }
