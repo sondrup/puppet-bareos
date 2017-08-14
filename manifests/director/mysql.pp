@@ -21,13 +21,12 @@ class bareos::director::mysql(
     require ::mysql::server
     mysql::db { $db_name:
       ensure   => present,
-      user     => $user,
-      dbname   => $db_user,
+      user     => $db_user,
       password => $db_pw,
       host     => $host,
       grant    => 'ALL',
       charset  => 'utf8',
-      collate  => 'urf8_bin',
+      collate  => 'utf8_bin',
       notify   => Exec["/bin/sh ${make_bareos_tables}"],
     }
   }
