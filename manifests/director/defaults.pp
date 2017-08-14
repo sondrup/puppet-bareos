@@ -15,8 +15,8 @@ class bareos::director::defaults {
   }
 
   bareos::director::pool { 'Default':
-    pooltype => 'Backup',
-    label    => 'Default-',
-    storage  => $bareos::director::storage_name,
+    pool_type => 'Backup',
+    label     => 'Default-',
+    storage   => $bareos::director::storage_name,
   }
 }
