@@ -19,7 +19,7 @@ class bareos::director::mysql(
 
   if $bareos::director::manage_db {
     require ::mysql::server
-    mysql::db { $app_name:
+    mysql::db { $db_name:
       ensure   => present,
       user     => $user,
       dbname   => $db_user,
