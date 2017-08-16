@@ -3,21 +3,26 @@
 # to ensure that the simple case of deploying a director and storage on the
 # same machine, allows clients to receive the correct configuration.
 #
-class bareos::director::defaults {
+class bareos::director::defaults (
+  Hash $jobdefs                = {},
+  Array[String] $schedule_runs = [],
+  Hash $pool                   = {},
+) {
 
-  bareos::jobdefs { 'Default': }
+  bareos::jobdefs { 'Default':
+    jobtype => 'Backup',
+    sched   => 'Default',
+    *       => $jobdefs,
+  }
 
   bareos::schedule { 'Default':
-    runs => [
-      'Level=Full sun at 2:05',
-      'Level=Incremental mon-sat at 2:05',
-    ],
+    runs => $schedule_runs,
   }
 
   bareos::director::pool { 'Default':
     pool_type        => 'Backup',
     label            => 'Default-',
-    max_volume_bytes => '50 GB',
     storage          => $bareos::director::storage_name,
+    *                => $pool,
   }
 }

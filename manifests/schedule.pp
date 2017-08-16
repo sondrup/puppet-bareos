@@ -13,7 +13,7 @@
 #   }
 #
 define bareos::schedule (
-  Array $runs,
+  Array[String] $runs,
   Stdlib::Absolutepath $conf_dir = $bareos::conf_dir,
 ) {
 

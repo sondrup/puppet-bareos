@@ -30,3 +30,10 @@ bareos::client::default_pool: 'Default'
 bareos::client::default_pool_full: ~
 bareos::client::default_pool_inc: ~
 bareos::client::default_pool_diff: ~
+
+bareos::director::defaults::schedule_runs:
+  - 'Level=Full sun at 2:05'
+  - 'Level=Incremental mon-sat at 2:05'
+
+bareos::director::defaults::pool:
+  max_volume_bytes: '50 GB'
